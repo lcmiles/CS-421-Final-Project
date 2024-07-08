@@ -1,12 +1,35 @@
+<!DOCTYPE html>
 <html>
-    <body>
-        <form action='/' method='post'>
-            <input placeholder="Name" name="name">
-            <input placeholder="Post Content" name="post">
-            <input type="submit" value="submit">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="top-left-box">
+        {% if 'username' in session %}
+            <span>Welcome, <strong>{{ session['username'] }}</strong></span>
+            <form action="{{ url_for('logout') }}" method="post">
+                <input type="submit" value="Logout">
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <form action="/" method="post">
+            <input placeholder="Post Content" name="post" type="text" required>
+            <input type="submit" value="Post">
         </form>
         {% for post in posts %}
-        <div>{{ post[1] + ': ' + post[2] }}</div>
+        <div class="post">
+            <div class="post-box">
+                <div class="post-header">
+                    <span>{{ post.name }}</span>
+                    <span>{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                </div>
+                <div class="post-content">{{ post.content }}</div>
+            </div>
+        </div>
         {% endfor %}
-    </body>
+    </div>
+</body>
 </html>

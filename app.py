@@ -20,7 +20,7 @@ CORS(app)
 
 db.init_app(app)
 
-app.config['UPLOAD_FOLDER'] = 'static/profile_pics'
+app.config['UPLOAD_FOLDER'] = './static/profile_pics'
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -142,7 +142,7 @@ def edit_profile():
 
         else:
 
-            update_profile(user.id, bio, user.profile_picture)
+            update_profile(user.id, bio, user.profile_image)
 
         return redirect(url_for('view_profile', username=user.username))
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>{{ user.username }}'s Profile</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="profile-box">
+
+        <h2>{{ user.username }}</h2>
+
+        <p>Email: {{ user.email }}</p>
+
+        {% if user.bio %}
+
+        <p>Bio: {{ user.bio }}</p>
+
+        {% endif %}
+
+        {% if user.profile_picture %}
+
+        <img src="{{ user.profile_picture }}" alt="Profile Picture">
+
+        {% endif %}
+
+    </div>
+
+    <div class="home-button">
+
+        <button onclick="window.location.href='{{ url_for('index') }}'" class="home-btn">Home</button>
+
+    </div>
+
+</body>
+
+</html>
+ 

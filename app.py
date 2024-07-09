@@ -36,17 +36,21 @@ def index():
 
         return redirect(url_for('login'))
 
+    # Assuming you have a way to fetch the user object
+
+    user = get_user_by_id(session['user_id'])
+
     if request.method == 'POST':
 
         user_id = session['user_id']
 
-        post_content = request.form.get('post')  
+        post_content = request.form.get('post')
 
         create_post(user_id, post_content)
 
     posts = get_posts()
 
-    return render_template('index.html', posts=posts)
+    return render_template('index.html', posts=posts, user=user)
 
 @app.route('/register', methods=['GET', 'POST'])
 

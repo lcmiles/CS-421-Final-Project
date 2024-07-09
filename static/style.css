@@ -270,7 +270,7 @@ input[type="submit"]:hover, button:hover {
 
 .post-input-box {
 
-    flex-grow: 1;
+    width: 80%;
 
     margin-right: 10px;
 

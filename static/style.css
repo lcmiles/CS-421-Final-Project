@@ -92,6 +92,14 @@ body {
 
 }
 
+.username-container {
+
+    flex: none;
+
+    float: left;
+
+}
+
 .edit-profile-btn {
 
     padding: 8px 15px;
@@ -270,7 +278,7 @@ input[type="submit"]:hover, button:hover {
 
 .post-input-box {
 
-    flex-grow: 1;
+    width: 80%;
 
     margin-right: 10px;
 
@@ -283,6 +291,30 @@ input[type="submit"]:hover, button:hover {
     justify-content: center;
 
     margin-top: 20px;
+
+}
+
+.profile-picture {
+
+    width: 100px; /* Adjust size as needed */
+
+    height: 100px;
+
+    border-radius: 50%; /* To make the image circular */
+
+    margin-right: 10px; /* Space between picture and username */
+
+}
+
+.post-profile-picture {
+
+    width: 40px; /* Adjust size as needed */
+
+    height: 40px;
+
+    border-radius: 50%; /* To make the image circular */
+
+    margin-right: 10px; /* Space between picture and username */
 
 }
  

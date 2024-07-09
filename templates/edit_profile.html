@@ -18,18 +18,39 @@
 
     </div>
 
-
     <div class="container">
 
-        <form action="/edit_profile" method="post">
+        <div class="profile-edit-box">
 
-            <textarea placeholder="Update Bio" name="bio">{{ user.bio }}</textarea>
+            <h2>Edit Profile</h2>
 
-            <input type="file" id="profile_picture" name="profile_picture" accept="image/*">
+            <form action="{{ url_for('edit_profile') }}" method="post" enctype="multipart/form-data">
 
-            <input type="submit" value="Update Profile">
+                <div>
 
-        </form>
+                    <label for="bio">Bio:</label>
+
+                    <textarea id="bio" name="bio">{{ user.bio }}</textarea>
+
+                </div>
+
+                <div>
+
+                    <label for="profile_picture">Profile Picture:</label>
+
+                    <input type="file" id="profile_picture" name="profile_picture">
+
+                </div>
+
+                <div>
+
+                    <button type="submit">Save Changes</button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 

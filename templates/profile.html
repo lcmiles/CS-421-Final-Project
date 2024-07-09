@@ -12,29 +12,36 @@
 
 <body>
 
-    <div class="profile-box">
+    <div class="top-left-box">
 
-        <h2>{{ user.username }}</h2>
-
-        <p>Email: {{ user.email }}</p>
-
-        {% if user.bio %}
-
-        <p>Bio: {{ user.bio }}</p>
-
-        {% endif %}
-
-        {% if user.profile_picture %}
-
-        <img src="{{ user.profile_picture }}" alt="Profile Picture">
-
-        {% endif %}
+        <a href="{{ url_for('index') }}" class="home-btn">Home</a>
 
     </div>
 
-    <div class="home-button">
+    <div class="container">
 
-        <button onclick="window.location.href='{{ url_for('index') }}'" class="home-btn">Home</button>
+        <div class="profile-box">
+
+            {% if user.profile_picture %}
+
+            <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture" class="profile-picture">
+
+            {% else %}
+
+            <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="profile-picture">
+
+            {% endif %}
+
+         <h2>{{ user.username }}</h2>
+
+         <p>Email: {{ user.email }}</p>
+
+            {% if user.bio %}
+
+         <p>Bio: {{ user.bio }}</p>
+
+            {% endif %}
+         </div>
 
     </div>
 

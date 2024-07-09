@@ -18,6 +18,16 @@
 
             <div class="user-box">
 
+                {% if user.profile_picture %}
+
+                <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture" class="profile-picture">
+
+                {% else %}
+
+                <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="profile-picture">
+
+                {% endif %}
+
                 <span><a href="{{ url_for('view_profile', username=session['username']) }}" class="username">{{ session['username'] }}</a></span>
 
                 <button onclick="window.location.href='{{ url_for('edit_profile') }}'" class="edit-profile-btn">Edit Profile</button>
@@ -26,7 +36,7 @@
 
         </div>
 
-        <form action="{{ url_for('logout') }}" method="post" class="vertical-form">
+        <form action="{{ url_for('logout') }}" method="post">
 
             <input type="submit" value="Logout">
 
@@ -36,7 +46,7 @@
 
     <div class="container">
 
-        <form action="/" method="post" class="horizontal-form">
+        <form action="/" method="post">
 
             <input class="post-input-box" placeholder="Post Content" name="post" type="text" required>
 
@@ -51,8 +61,17 @@
             <div class="post-box">
 
                 <div class="post-header">
+                    {% if user.profile_picture %}
 
-                    <span><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+                    <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+
+                    {% else %}
+
+                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+
+                    {% endif %}
+
+                    <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
 
                     <span>{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
 

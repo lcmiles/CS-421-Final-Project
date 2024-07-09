@@ -61,8 +61,17 @@
             <div class="post-box">
 
                 <div class="post-header">
+                    {% if user.profile_picture %}
 
-                    <span><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+                    <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+
+                    {% else %}
+
+                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+
+                    {% endif %}
+
+                    <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
 
                     <span>{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
 

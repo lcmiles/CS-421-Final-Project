@@ -92,6 +92,14 @@ body {
 
 }
 
+.username-container {
+
+    flex: none;
+
+    float: left;
+
+}
+
 .edit-profile-btn {
 
     padding: 8px 15px;
@@ -298,7 +306,7 @@ input[type="submit"]:hover, button:hover {
 
 }
 
-.profile-picture-small {
+.post-profile-picture {
 
     width: 40px; /* Adjust size as needed */
 

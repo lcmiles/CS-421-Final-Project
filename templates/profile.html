@@ -1,4 +1,4 @@
-[3:42 PM] Logan Miles
+[10:18 AM] Logan Miles
 <!DOCTYPE html>
 
 <html>
@@ -23,7 +23,11 @@
 
         <div class="profile-box">
 
-            <img src="{{ session['profile_picture'] }}" alt="Profile Picture" class="profile-picture">
+            {% if user.profile_picture %}
+
+            <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture" class="profile-picture">
+
+            {% endif %}
 
             <h2>{{ user.username }}</h2>
 
@@ -31,7 +35,7 @@
 
             {% if user.bio %}
 
-                <p>Bio: {{ user.bio }}</p>
+            <p>Bio: {{ user.bio }}</p>
 
             {% endif %}
 

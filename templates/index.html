@@ -20,7 +20,7 @@
 
                 {% if session['profile_picture'] %}
 
-                <img src="{{ session['profile_picture'] }}" alt="Profile Picture" class="profile-picture">
+                <img src="{{ url_for('static', filename=session['profile_picture']) }}" alt="Profile Picture" class="profile-picture">
 
                 {% endif %}
 

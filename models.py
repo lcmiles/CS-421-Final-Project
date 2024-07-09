@@ -14,7 +14,7 @@ class User(db.Model):
    
    password = db.Column(db.String(60), nullable=False)
    
-   profile_image = db.Column(db.String(20), nullable=False, default='default.jpg')
+   profile_picture = db.Column(db.String(20), nullable=False, default='default.jpg')
 
 class Post(db.Model):
    
@@ -129,7 +129,7 @@ def init_db():
 
 def __repr__(self):
     
-    return f"User('{self.username}', '{self.email}', '{self.profile_image}')"
+    return f"User('{self.username}', '{self.email}', '{self.profile_picture}')"
 
 def __repr__(self):
     

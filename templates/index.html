@@ -73,7 +73,7 @@
 
                     <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
 
-                    <span>{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    <span class="time">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
 
                 </div>
 

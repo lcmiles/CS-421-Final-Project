@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 from flask_cors import CORS
 
@@ -58,19 +58,32 @@ def register():
 
     if request.method == 'POST':
 
-        email = request.form.get('email')
-
         username = request.form.get('username')
+
+        email = request.form.get('email')
 
         password = request.form.get('password')
 
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        existing_user = User.query.filter_by(username=username).first()
 
-        create_user(email, username, hashed_password)
+        if existing_user:
+
+            flash('Username already taken. Please choose a different username.', 'error')
+
+            return redirect(url_for('register'))
+
+        new_user = User(username=username, email=email, password=generate_password_hash(password))
+
+        db.session.add(new_user)
+
+        db.session.commit()
+
+        flash('Account created successfully!', 'success')
 
         return redirect(url_for('login'))
 
     return render_template('register.html')
+ 
 
 @app.route('/login', methods=['GET', 'POST'])
 

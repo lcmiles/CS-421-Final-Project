@@ -20,7 +20,7 @@ body {
 
     width: 80%;
 
-    max-width: 800px;
+    max-width: 1000px;
 
     margin: 20px auto;
 
@@ -158,6 +158,8 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 
     font-size: 16px;
 
+    margin-left: 15px;
+
 }
 
 input[type="submit"], button {
@@ -204,7 +206,7 @@ input[type="submit"]:hover, button:hover {
 
     display: flex;
 
-    justify-content: space-between;
+    justify-content: left;
 
     align-items: center;
 
@@ -232,9 +234,9 @@ input[type="submit"]:hover, button:hover {
 
     margin-top: 20px;
 
-    width: 80%;
+    width: 95%;
 
-    max-width: 800px;
+    max-width: 1000px;
 
     text-align: center;
 
@@ -304,6 +306,8 @@ input[type="submit"]:hover, button:hover {
 
     margin-right: 10px; /* Space between picture and username */
 
+    background-color: white;
+
 }
 
 .post-profile-picture {
@@ -316,5 +320,57 @@ input[type="submit"]:hover, button:hover {
 
     margin-right: 10px; /* Space between picture and username */
 
+}
+
+.flashes {
+
+    list-style-type: none;
+
+    padding: 0;
+
+}
+
+.flashes li {
+
+    padding: 10px;
+
+    margin-bottom: 10px;
+
+    border-radius: 5px;
+
+}
+
+.flashes li.error {
+
+    background-color: #f8d7da;
+
+    color: #721c24;
+
+}
+
+.bio {
+
+    text-align: left;
+
+    text-wrap: stable;
+
+}
+
+.email {
+
+    text-align: left;
+
+    text-wrap: stable;
+
+}
+
+h2, h3 {
+
+    text-align: left;
+
+}
+
+h1 {
+    text-align: center;
 }
  

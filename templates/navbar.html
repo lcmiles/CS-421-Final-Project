@@ -1,0 +1,18 @@
+<div class="navbar">
+    <a href="{{ url_for('index') }}" class="home-btn">Home</a>
+    <div class="dropdown">
+        {% if session['profile_picture'] %}
+        <img src="{{ url_for('static', filename=session['profile_picture']) }}" alt="Profile Picture" class="profile-picture">
+        {% else %}
+        <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="profile-picture">
+        {% endif %}
+        <button class="dropbtn">{{ session['username'] }} &#9662;</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('view_profile', username=session['username']) }}">Profile</a>
+            <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+            <form action="{{ url_for('logout') }}" method="post" class="dropdown-logout-form">
+                <button type="submit" class="dropdown-link">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>

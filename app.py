@@ -36,8 +36,6 @@ def index():
 
         return redirect(url_for('login'))
 
-    # Assuming you have a way to fetch the user object
-
     user = get_user_by_id(session['user_id'])
 
     if request.method == 'POST':
@@ -81,7 +79,6 @@ def register():
         return redirect(url_for('login'))
 
     return render_template('register.html')
- 
 
 @app.route('/login', methods=['GET', 'POST'])
 
@@ -95,18 +92,28 @@ def login():
 
         user = get_user_by_email(email)
 
-        if user and check_password_hash(user.password, password):
+        if user:
 
-            session['user_id'] = user.id
+            if check_password_hash(user.password, password):
 
-            session['username'] = user.username
+                session['user_id'] = user.id
 
-            session['profile_picture'] = user.profile_picture  # Add profile picture to session
+                session['username'] = user.username
 
-            return redirect(url_for('index'))
+                session['profile_picture'] = user.profile_picture  # Add profile picture to session
 
-    return render_template('login.html') 
+                return redirect(url_for('index'))
 
+            else:
+
+                flash('Incorrect password. Please try again.', 'error')
+
+        else:
+
+            flash('Unrecognized email. Please try again.', 'error')
+
+    return render_template('login.html')
+ 
 @app.route('/logout', methods=['POST'])
 
 def logout():
@@ -151,29 +158,19 @@ def edit_profile():
 
         if profile_picture and allowed_file(profile_picture.filename):
 
-            # Extract the file extension
-
             file_extension = profile_picture.filename.rsplit('.', 1)[1].lower()
 
-            # Create the new filename
-
             filename = f"{user.username}.{file_extension}"
-
-            # Save the file to the correct location
 
             profile_picture_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
             profile_picture.save(profile_picture_path)
-
-            # Update the user's profile picture path in the database
 
             user.profile_picture = f"profile_pics/{filename}"
 
         user.bio = bio
 
         db.session.commit()
-
-        # Update session with new profile picture
 
         session['profile_picture'] = user.profile_picture
 

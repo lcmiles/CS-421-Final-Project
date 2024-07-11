@@ -1,32 +1,86 @@
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
     <title>Home</title>
+
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
+
 <body>
+
     {% include 'navbar.html' %}
+
     <div class="container">
+
         <form action="/" method="post">
+
             <input class="post-input-box" placeholder="Post Content" name="post" type="text" required>
+
             <input type="submit" value="Post">
+
         </form>
+
         {% for post in posts %}
+
         <div class="post">
+
             <div class="post-box">
+
                 <div class="post-header">
-                    {% if post.user.profile_picture %}
+
+                    {% if user.profile_picture %}
+
                     <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+
                     {% else %}
+
                     <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+
                     {% endif %}
+
                     <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
-                    <span class="time">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+
+                    <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+
                 </div>
+
                 <div class="post-content">{{ post.content }}</div>
+
             </div>
+
         </div>
+
         {% endfor %}
+
     </div>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            var elements = document.getElementsByClassName("time");
+
+            for (var i = 0; i < elements.length; i++) {
+
+                var element = elements[i];
+
+                var utcTime = element.getAttribute("data-timestamp");
+
+                var localTime = new Date(utcTime);
+
+                element.textContent = localTime.toLocaleString() + " CT";
+
+            }
+
+        });
+
+    </script>
+
 </body>
+
 </html>
+ 

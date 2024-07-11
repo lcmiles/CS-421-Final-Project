@@ -10,6 +10,8 @@ import os
 
 from models import db, create_post, get_posts, create_user, get_user_by_email, add_comment, get_comments, like_post, get_likes, get_user_by_id, get_user_by_username, update_profile, User
 
+import pytz
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -48,7 +50,14 @@ def index():
 
     posts = get_posts()
 
+    central = pytz.timezone('US/Central')
+
+    for post in posts:
+
+        post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
+
     return render_template('index.html', posts=posts, user=user)
+ 
 
 @app.route('/register', methods=['GET', 'POST'])
 
@@ -100,7 +109,7 @@ def login():
 
                 session['username'] = user.username
 
-                session['profile_picture'] = user.profile_picture  # Add profile picture to session
+                session['profile_picture'] = user.profile_picture
 
                 return redirect(url_for('index'))
 

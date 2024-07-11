@@ -16,6 +16,24 @@
 
     <div class="container">
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <ul class="flashes">
+
+                    {% for category, message in messages %}
+
+                        <li class="{{ category }}">{{ message }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% endif %}
+
+        {% endwith %}
+
         <div class="profile-box">
 
             {% if user.profile_picture %}
@@ -29,6 +47,44 @@
             {% endif %}
 
             <h1>{{ user.username }}</h1>
+
+            <div class="profile-buttons">
+                {% if session['user_id'] != user.id %}
+                    {% if get_follow_status(session['user_id'], user.id) == -1 %}
+                        <form action="{{ url_for('follow', user=user.id, action='request') }}" method="post">
+                            <button type="submit" class="profile-button">Follow</button>
+                        </form>
+                    {% elif get_follow_status(session['user_id'], user.id) == 0 %}
+                        <button class="profile-button" disabled>Request Pending</button>
+                    {% elif get_follow_status(session['user_id'], user.id) == 1 %}
+                        <form action="{{ url_for('follow', user=user.id, action='unfollow') }}" method="post">
+                            <button type="submit" class="profile-button">Unfollow</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            {% if user.followers or user.following %}
+            <div class="profile-container">
+                {% if user.followers %}
+                    <h3>Followers:</h3>
+                    <ul class="followers">
+                        {% for follow in user.followers %}
+                        <li><a href="{{ url_for('view_profile', username=follow.follower.username) }}">{{ follow.follower.username }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if user.following %}
+                    <h3>Following:</h3>
+                    <ul class="following">
+                        {% for follow in user.following %}
+                        <li><a href="{{ url_for('view_profile', username=follow.followed.username) }}">{{ follow.followed.username }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% endif %}
 
             <div class="profile-container">
 

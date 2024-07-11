@@ -40,6 +40,16 @@ def init_db():
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
     ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS follows (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            follower_id INTEGER,
+            followed_id INTEGER,
+            approved INTEGER DEFAULT 0,
+            FOREIGN KEY(follower_id) REFERENCES users(id),
+            FOREIGN KEY(followed_id) REFERENCES users(id)
+        )
+    ''')
     con.commit()
     con.close()
 

@@ -50,6 +50,12 @@ body {
     margin-left: 30px;
 }
 
+.right-navbar {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+}
+
 .home-btn {
     color: white;
     text-decoration: none;
@@ -100,7 +106,7 @@ body {
     display: none;
     position: absolute;
     right: 0;
-    top: 100%;
+    top: 4.9em;
     background-color: #f9f9f9;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -109,12 +115,28 @@ body {
     overflow: hidden;
 }
 
-.dropdown-content a, .dropdown-content form {
+/* Selects all immediate children of .dropdown-content */
+.dropdown-content > * {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
     font-size: 16px;
+    margin: 0;
+}
+
+.dropdown-content > div {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.dropdown-content button {
+    margin: 0;
+}
+
+.dropdown-content form {
+    margin: 0;
 }
 
 .dropdown-content a:hover, .dropdown-content form:hover {
@@ -134,6 +156,23 @@ body {
     text-align: left;
     padding: 12px 16px;
     font-size: 16px;
+}
+
+.notifs-content {
+    display: none;
+    position: absolute;
+    right: 3em;
+    top: 5.5em;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.notifs:hover .notifs-content {
+    display: block;
 }
 
 .user-info {
@@ -236,7 +275,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 
 }
 
-input[type="submit"], button {
+input[type="submit"], button, a.button {
 
     padding: 10px 20px;
 
@@ -254,9 +293,11 @@ input[type="submit"], button {
 
     margin-top: 15px;
 
+    text-decoration: none;
+
 }
 
-input[type="submit"]:hover, button:hover {
+input[type="submit"]:hover, button:hover, a.button:hover {
 
     background-color: #004896;
 
@@ -324,6 +365,17 @@ input[type="submit"]:hover, button:hover {
 
     margin-top: 10px;
 
+}
+
+.followers li:not(:last-child)::after, .following li:not(:last-child)::after {
+    content: ",";
+}
+
+.followers, .following {
+    display: flex;
+    list-style-type: none;
+    gap: 0.3em;
+    padding: 0;
 }
 
 .home-btn {
@@ -465,7 +517,6 @@ h1 {
     border-radius: 10px;
 
 }
-
 .flashes {
 
     list-style-type: none;
@@ -512,3 +563,6 @@ h1 {
 
 }
  
+button:disabled {
+    cursor: not-allowed;
+}

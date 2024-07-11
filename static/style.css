@@ -1,39 +1,22 @@
 body {
-
     font-family: Arial, sans-serif;
-
     background-color: #f5f5f5;
-
     margin: 0;
-
     padding: 0;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
 }
 
 .container {
-
     width: 80%;
-
     max-width: 1000px;
-
     margin: 20px auto;
-
     padding: 20px;
-
     background: #fff;
-
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-
     margin-top: 150px;
-
 }
 
 .navbar {
@@ -79,7 +62,7 @@ body {
 }
 
 .profile-picture {
-    width: 40px; 
+    width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
@@ -109,7 +92,7 @@ body {
     top: 4.9em;
     background-color: #f9f9f9;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 5px;
     overflow: hidden;
@@ -139,7 +122,8 @@ body {
     margin: 0;
 }
 
-.dropdown-content a:hover, .dropdown-content form:hover {
+.dropdown-content a:hover,
+.dropdown-content form:hover {
     background-color: #ddd;
 }
 
@@ -165,7 +149,7 @@ body {
     top: 5.5em;
     background-color: #f9f9f9;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 5px;
     overflow: hidden;
@@ -176,202 +160,133 @@ body {
 }
 
 .user-info {
-
     display: flex;
-
     align-items: center;
-
 }
 
 .user-box {
-
     display: flex;
-
     align-items: center;
-
 }
 
 .username {
-
     font-weight: bold;
-
     text-decoration: none;
-
     color: white;
-
     font-size: 30px;
-
     margin-right: 15px;
-
 }
 
 .username-container {
-
     flex: none;
-
     float: left;
-
 }
 
 .edit-profile-btn {
-
     padding: 8px 15px;
-
     background-color: #0056b3;
-
     color: #fff;
-
     border: none;
-
     border-radius: 5px;
-
     cursor: pointer;
-
     font-size: 14px;
-
 }
 
 .edit-profile-btn:hover {
-
     background-color: #004896;
-
 }
 
 form {
-
     margin-bottom: 20px;
-
 }
 
 .vertical-form {
-
     display: flex;
-
     flex-direction: column;
-
 }
 
 .horizontal-form {
-
     display: flex;
-
     align-items: center;
-
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea {
-
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
     margin-bottom: 10px;
-
     padding: 10px;
-
     border: 1px solid #ddd;
-
     border-radius: 5px;
-
     font-size: 16px;
-
     margin-left: 15px;
-
 }
 
-input[type="submit"], button, a.button {
-
+input[type="submit"],
+button,
+a.button {
     padding: 10px 20px;
-
     background-color: #0056b3;
-
     color: #fff;
-
     border: none;
-
     border-radius: 5px;
-
     cursor: pointer;
-
     font-size: 16px;
-
     margin-top: 15px;
-
     text-decoration: none;
-
 }
 
-input[type="submit"]:hover, button:hover, a.button:hover {
-
+input[type="submit"]:hover,
+button:hover,
+a.button:hover {
     background-color: #004896;
-
 }
 
 .post {
-
     border-bottom: 1px solid #ddd;
-
     padding: 10px 0;
-
 }
 
 .post:last-child {
-
     border-bottom: none;
-
 }
 
 .post-header {
-
     display: flex;
-
     justify-content: left;
-
     align-items: center;
-
 }
 
 .post-content {
-
     margin: 10px 0;
-
     word-wrap: break-word;
-
     overflow-wrap: break-word;
-
 }
 
 .profile-box {
-
     padding: 20px;
-
     background-color: #f9f9f9;
-
     border: 1px solid #ddd;
-
     border-radius: 5px;
-
     margin-top: 20px;
-
     width: 95%;
-
     max-width: 1000px;
-
     text-align: center;
-
 }
 
 .profile-box img {
-
     max-width: 100%;
-
     height: auto;
-
     margin-top: 10px;
-
 }
 
-.followers li:not(:last-child)::after, .following li:not(:last-child)::after {
+.followers li:not(:last-child)::after,
+.following li:not(:last-child)::after {
     content: ",";
 }
 
-.followers, .following {
+.followers,
+.following {
     display: flex;
     list-style-type: none;
     gap: 0.3em;
@@ -379,121 +294,75 @@ input[type="submit"]:hover, button:hover, a.button:hover {
 }
 
 .home-btn {
-
     color: white;
-
     text-decoration: none;
-
     padding: 8px 15px;
-
     background-color: #007bff;
-
     border: none;
-
     border-radius: 5px;
-
     cursor: pointer;
-
     font-size: 14px;
-
 }
 
 .home-btn:hover {
-
     background-color: #0056b3;
-
 }
 
 .post-input-box {
-
     width: 80%;
-
     margin-right: 10px;
-
 }
 
 .home-button {
-
     display: flex;
-
     justify-content: center;
-
     margin-top: 20px;
-
 }
 
 .profile-picture {
-
     width: 100px; /* Adjust size as needed */
-
     height: 100px;
-
     border-radius: 50%; /* To make the image circular */
-
     margin-right: 10px; /* Space between picture and username */
-
     background-color: white;
-
 }
 
 .post-profile-picture {
-
     width: 40px; /* Adjust size as needed */
-
     height: 40px;
-
     border-radius: 50%; /* To make the image circular */
-
     margin-right: 10px; /* Space between picture and username */
-
 }
 
 .flashes {
-
     list-style-type: none;
-
     padding: 0;
-
 }
 
 .flashes li {
-
     padding: 10px;
-
     margin-bottom: 10px;
-
     border-radius: 5px;
-
 }
 
 .flashes li.error {
-
     background-color: #f8d7da;
-
     color: #721c24;
-
 }
 
 .bio {
-
     text-align: left;
-
     text-wrap: stable;
-
 }
 
 .email {
-
     text-align: left;
-
     text-wrap: stable;
-
 }
 
-h2, h3 {
-
+h2,
+h3 {
     text-align: left;
-
 }
 
 h1 {
@@ -501,68 +370,41 @@ h1 {
 }
 
 .profile-container {
-
     width: 80%;
-
     max-width: 1000px;
-
     margin: 20px auto;
-
     padding: 20px;
-
     background: #fff;
-
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-
 }
 .flashes {
-
     list-style-type: none;
-
     padding: 0;
-
     margin: 20px 0;
-
     width: 80%;
-
     max-width: 1000px;
-
     margin: 0 auto;
-
 }
 
 .flashes li {
-
     padding: 10px;
-
     margin-bottom: 10px;
-
     border-radius: 5px;
-
     font-size: 16px;
-
     text-align: center;
-
 }
 
 .flashes li.error {
-
     background-color: #f8d7da;
-
     color: #721c24;
-
 }
 
 .flashes li.success {
-
     background-color: #d4edda;
-
     color: #155724;
-
 }
- 
+
 button:disabled {
     cursor: not-allowed;
 }

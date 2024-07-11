@@ -1,60 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html>
+    <head>
+        <title>Register</title>
 
-<head>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+    </head>
 
-    <title>Register</title>
+    <body>
+        <div class="container">
+            <h2>Register</h2>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+            {% with messages = get_flashed_messages(with_categories=true) %} {%
+            if messages %}
 
-</head>
+            <ul class="flashes">
+                {% for category, message in messages %}
 
-<body>
+                <li class="{{ category }}">{{ message }}</li>
 
-    <div class="container">
+                {% endfor %}
+            </ul>
 
-        <h2>Register</h2>
+            {% endif %} {% endwith %}
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
+            <form action="{{ url_for('register') }}" method="post">
+                <label for="username">Username:</label>
 
-            {% if messages %}
+                <input type="text" id="username" name="username" required />
 
-                <ul class="flashes">
+                <label for="email">Email:</label>
 
-                    {% for category, message in messages %}
+                <input type="email" id="email" name="email" required />
 
-                        <li class="{{ category }}">{{ message }}</li>
+                <label for="password">Password:</label>
 
-                    {% endfor %}
+                <input type="password" id="password" name="password" required />
 
-                </ul>
-
-            {% endif %}
-
-        {% endwith %}
-
-        <form action="{{ url_for('register') }}" method="post">
-
-            <label for="username">Username:</label>
-
-            <input type="text" id="username" name="username" required>
-
-            <label for="email">Email:</label>
-
-            <input type="email" id="email" name="email" required>
-
-            <label for="password">Password:</label>
-
-            <input type="password" id="password" name="password" required>
-
-            <input type="submit" value="Register">
-
-        </form>
-
-    </div>
-
-</body>
-
+                <input type="submit" value="Register" />
+            </form>
+        </div>
+    </body>
 </html>
- 

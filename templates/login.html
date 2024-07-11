@@ -1,58 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html>
+    <head>
+        <title>Login</title>
 
-<head>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+    </head>
 
-    <title>Login</title>
+    <body>
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <ul class="flashes">
+            {% for category, message in messages %}
 
-</head>
+            <li class="{{ category }}">{{ message }}</li>
 
-<body>
+            {% endfor %}
+        </ul>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% endif %} {% endwith %}
 
-        {% if messages %}
+        <div class="container">
+            <h2>Login</h2>
 
-            <ul class="flashes">
+            <form action="{{ url_for('login') }}" method="post">
+                <label for="email">Email:</label>
 
-                {% for category, message in messages %}
+                <input type="email" id="email" name="email" required />
 
-                    <li class="{{ category }}">{{ message }}</li>
+                <label for="password">Password:</label>
 
-                {% endfor %}
+                <input type="password" id="password" name="password" required />
 
-            </ul>
+                <input type="submit" value="Login" />
+            </form>
 
-        {% endif %}
-
-    {% endwith %}
-
-    <div class="container">
-
-        <h2>Login</h2>
-
-        <form action="{{ url_for('login') }}" method="post">
-
-            <label for="email">Email:</label>
-
-            <input type="email" id="email" name="email" required>
-
-            <label for="password">Password:</label>
-
-            <input type="password" id="password" name="password" required>
-
-            <input type="submit" value="Login">
-
-        </form>
-
-        <button onclick="window.location.href='{{ url_for('register') }}'">Register</button>
-
-    </div>
-
-</body>
-
+            <button onclick="window.location.href='{{ url_for('register') }}'">
+                Register
+            </button>
+        </div>
+    </body>
 </html>
- 

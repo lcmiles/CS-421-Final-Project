@@ -72,7 +72,7 @@
         </div>
         {% endfor %}
         <form action="{{url_for('post_page',post_id=post.id)}}" method="post" id="commentform">
-            <input class="comment-input-box" placeholder="Comment" name="comment" type="text" required>
+            <input style = "margin-left: 0px;" class="comment-input-box" placeholder="Comment" name="comment" type="text" required>
             <input type="submit" value="Post">
         </form>
         {% endfor %}

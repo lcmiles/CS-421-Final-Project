@@ -351,6 +351,28 @@ def follow():
 
     return redirect(url_for("view_profile", username=followed_user.username))
 
+@app.route("/post/<post_id>", methods=['GET','POST'])
+def post_page(post_id):
+    if "user_id" not in session:
+
+        return redirect(url_for("login"))
+
+    user = get_user_by_id(session["user_id"])
+    
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        comment = request.form.get("comment")
+
+        add_comment(post_id, user_id, comment)
+    
+    post= get_post_by_id(post_id)
+    
+    comments = get_comments(post_id)
+    
+    return render_template("post_page.html" , post=post, comments=comments,user=user)
+
 if __name__ == "__main__":
 
     with app.app_context():

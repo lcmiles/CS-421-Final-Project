@@ -106,6 +106,10 @@ def create_post_db(user_id, post_content, photo=None, video=None):
 def get_posts():
     return Post.query.order_by(Post.timestamp.desc()).all()
 
+def get_post_by_id(post_id):
+    
+    return Post.query.filter_by(id=post_id)
+
 
 def add_comment(post_id, user_id, content):
     new_comment = Comment(post_id=post_id, user_id=user_id, content=content)

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>View Post</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% for post in post %}
+    <div class="container">
+        <div class="post">
+
+            <div class="post-box">
+
+                <div class="post-header">
+
+                    {% if post.user.profile_picture %}
+
+                    <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+
+                    {% else %}
+
+                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+
+                    {% endif %}
+
+                    <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+
+                </div>
+
+                <div class="post-content">{{ post.content }}</div>
+
+            </div>
+            {% for comment in comments %}
+            <div class="comment">
+            <div class="comment-box">
+                <div class="comment-header">
+                    {% if comment.user.profile_picture %}
+                    <img src="{{ url_for('static', filename=comment.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+                    {% endif %}
+                    <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=comment.user.username) }}" class="username">{{ comment.user.username }}</a></span>
+                </div>
+                <div class="post-content">{{ comment.content }}</div>
+            </div>
+        </div>
+        {% endfor %}
+        <form action="{{url_for('post_page',post_id=post.id)}}" method="post" id="commentform">
+            <input class="comment-input-box" placeholder="Comment" name="comment" type="text" required>
+            <input type="submit" value="Post">
+        </form>
+        {% endfor %}
+        </div>
+    </div>
+    
+</body>
+</html>

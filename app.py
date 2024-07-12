@@ -352,6 +352,7 @@ def follow():
     return redirect(url_for("view_profile", username=followed_user.username))
 
 @app.route("/post/<post_id>", methods=['GET','POST'])
+
 def post_page(post_id):
     if "user_id" not in session:
 
@@ -371,7 +372,27 @@ def post_page(post_id):
     
     comments = get_comments(post_id)
     
-    return render_template("post_page.html" , post=post, comments=comments,user=user)
+    likes = get_likes(post_id)
+    
+    return render_template("post_page.html" , post=post, comments=comments,user=user, likes=likes)
+
+@app.route("/like/<post_id>", methods=['GET','POST'])
+
+def server_like(post_id):
+    
+    if "user_id" not in session:
+
+        return redirect(url_for("login"))
+
+    user= get_user_by_id(session["user_id"])
+    
+    if request.method == "POST":
+        
+        user_id = session['user_id']
+        
+        like_post(post_id,user_id)
+    
+    return redirect(url_for("post_page",post_id=post_id))
 
 if __name__ == "__main__":
 

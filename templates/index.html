@@ -1,86 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html>
+    <head>
+        <title>Home</title>
 
-<head>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="{{ url_for('static', filename='style.css') }}"
+        />
+    </head>
 
-    <title>Home</title>
+    <body>
+        {% include 'navbar.html' %}
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <div class="container">
+            <form action="/" method="post">
+                <input
+                    class="post-input-box"
+                    placeholder="Post Content"
+                    name="post"
+                    type="text"
+                    required
+                />
 
-</head>
+                <input type="submit" value="Post" />
+            </form>
 
-<body>
+            {% for post in posts %}
 
-    {% include 'navbar.html' %}
+            <div class="post">
+                <div class="post-box">
+                    <div class="post-header">
+                        {% if user.profile_picture %}
 
-    <div class="container">
+                        <img
+                            src="{{ url_for('static', filename=post.user.profile_picture) }}"
+                            alt="Profile Picture"
+                            class="post-profile-picture"
+                        />
 
-        <form action="/" method="post">
+                        {% else %}
 
-            <input class="post-input-box" placeholder="Post Content" name="post" type="text" required>
+                        <img
+                            src="{{ url_for('static', filename='default.png') }}"
+                            alt="Default Profile Picture"
+                            class="post-profile-picture"
+                        />
 
-            <input type="submit" value="Post">
+                        {% endif %}
 
-        </form>
+                        <span class="username-container"
+                            ><a
+                                style="color: dodgerblue"
+                                href="{{ url_for('view_profile', username=post.user.username) }}"
+                                class="username"
+                                >{{ post.user.username }}</a
+                            ></span
+                        >
 
-        {% for post in posts %}
+                        <span
+                            class="time"
+                            data-timestamp="{{ post.timestamp.isoformat() }}"
+                            >{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                            }}</span
+                        >
+                    </div>
 
-        <div class="post">
-
-            <div class="post-box">
-
-                <div class="post-header">
-
-                    {% if user.profile_picture %}
-
-                    <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
-
-                    {% else %}
-
-                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
-
-                    {% endif %}
-
-                    <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
-
-                    <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
-
+                    <div class="post-content">{{ post.content }}</div>
                 </div>
-
-                <div class="post-content">{{ post.content }}</div>
-
             </div>
 
+            {% endfor %}
         </div>
 
-        {% endfor %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var elements = document.getElementsByClassName("time");
 
-    </div>
+                for (var i = 0; i < elements.length; i++) {
+                    var element = elements[i];
 
-    <script>
+                    var utcTime = element.getAttribute("data-timestamp");
 
-        document.addEventListener("DOMContentLoaded", function() {
+                    var localTime = new Date(utcTime);
 
-            var elements = document.getElementsByClassName("time");
-
-            for (var i = 0; i < elements.length; i++) {
-
-                var element = elements[i];
-
-                var utcTime = element.getAttribute("data-timestamp");
-
-                var localTime = new Date(utcTime);
-
-                element.textContent = localTime.toLocaleString() + " CT";
-
-            }
-
-        });
-
-    </script>
-
-</body>
-
+                    element.textContent = localTime.toLocaleString() + " CT";
+                }
+            });
+        </script>
+    </body>
 </html>
- 

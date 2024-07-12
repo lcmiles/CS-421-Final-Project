@@ -68,8 +68,8 @@
 
             </div>
 
+            <a href="{{ url_for('post_page',post_id=post.id)}}" class="view-post-btn">View Post</a>
         </div>
-        <a href="{{ url_for('post_page',post_id=post.id)}}" class="home-btn">View Post</a>
 
         {% endfor %}
 

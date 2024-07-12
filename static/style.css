@@ -39,7 +39,7 @@ body {
     align-items: center;
     margin-right: 30px;
  }
- .home-btn, .create-post-btn {
+ .home-btn, .create-post-btn, .view-post-btn {
     color: white;
     text-decoration: none;
     padding: 10px 20px;
@@ -51,8 +51,11 @@ body {
     transition: background-color 0.3s;
     margin-left: 15px;
  }
- .home-btn:hover, .create-post-btn:hover {
+ .home-btn:hover, .create-post-btn:hover, .view-post-btn {
     background-color: #2980b9;
+ }
+ .view-post-btn {
+    margin-left: 0px;
  }
  .dropdown {
     position: relative;
@@ -238,6 +241,8 @@ a.button:hover {
 
     background-color: #f9f9f9;
 
+    padding-bottom: 30px;
+
 }
 
 .post-box {
@@ -245,6 +250,8 @@ a.button:hover {
     display: flex;
 
     flex-direction: column;
+
+    margin-bottom: 15px;
 
 }
 
@@ -305,6 +312,12 @@ a.button:hover {
     border: 1px solid #ddd;
 
     border-radius: 5px;
+
+    width: 500px;
+
+    height: 500px;
+
+    object-fit: cover;
 
 }
 

@@ -18,11 +18,11 @@
 
         <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
 
-            <input class="post-input-box" placeholder="Post Content" name="post" type="text" required>
+            <input class="post-input-box" placeholder="Enter you text here" name="post" type="text" required>
 
-            <input type="file" name="photo">
+            <a>Upload a photo: </a> <input type="file" name="photo">
 
-            <input type="file" name="video">
+            <a>Upload a video: </a> <input type="file" name="video">
 
             <input type="submit" value="Post">
 

@@ -243,8 +243,97 @@ a.button:hover {
 }
 
 .post {
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0;
+
+    border: 1px solid #ddd;
+
+    padding: 10px;
+
+    margin-bottom: 10px;
+
+    background-color: #f9f9f9;
+
+}
+
+.post-box {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+.post-header {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+
+}
+
+.post-profile-picture {
+
+    width: 40px;
+
+    height: 40px;
+
+    border-radius: 50%;
+
+    margin-right: 10px;
+
+}
+
+.username-container {
+
+    font-weight: bold;
+
+    margin-right: 10px;
+
+}
+
+.time {
+
+    color: #888;
+
+    font-size: 12px;
+
+    margin-left: auto;
+
+}
+
+.post-content {
+
+    margin-bottom: 10px;
+
+}
+
+.post-photo img {
+
+    max-width: 100%;
+
+    height: auto;
+
+    margin-bottom: 10px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 5px;
+
+}
+
+.post-video video {
+
+    max-width: 100%;
+
+    height: auto;
+
+    margin-bottom: 10px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 5px;
+
 }
 
 .post:last-child {

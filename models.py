@@ -30,12 +30,13 @@ class User(db.Model):
 
 
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
-    user = db.relationship("User", backref=db.backref("posts", lazy=True))
+   id = db.Column(db.Integer, primary_key=True)
+   user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+   content = db.Column(db.Text, nullable=False)
+   timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+   photo = db.Column(db.String(120), nullable=True)
+   video = db.Column(db.String(120), nullable=True)
+   user = db.relationship("User", backref=db.backref("posts", lazy=True))
 
 
 class Comment(db.Model):
@@ -94,14 +95,13 @@ def update_profile(user_id, bio, profile_picture):
 
     db.session.commit()
 
+def create_post_db(user_id, post_content, photo=None, video=None):
 
-def create_post(user_id, post_content):
-    new_post = Post(user_id=user_id, content=post_content)
+    new_post = Post(user_id=user_id, content=post_content, photo=photo, video=video)
 
     db.session.add(new_post)
 
     db.session.commit()
-
 
 def get_posts():
     return Post.query.order_by(Post.timestamp.desc()).all()

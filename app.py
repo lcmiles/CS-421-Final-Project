@@ -9,9 +9,10 @@ import pytz
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "your_secret_key"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config["UPLOAD_FOLDER"] = "static/profile_pics"
+app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
+app.config["UPLOAD_FOLDER"] = "static/uploads"
 
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
 
 CORS(app)
 
@@ -21,28 +22,119 @@ db.init_app(app)
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 @app.route("/", methods=["GET", "POST"])
+
 def index():
+
     if "user_id" not in session:
+
         return redirect(url_for("login"))
 
     user = get_user_by_id(session["user_id"])
 
     if request.method == "POST":
+
         user_id = session["user_id"]
+
         post_content = request.form.get("post")
-        create_post(user_id, post_content)
+
+        photo = None
+
+        video = None
+
+        if 'photo' in request.files:
+
+            photo_file = request.files['photo']
+
+            if photo_file and allowed_file(photo_file.filename):
+
+                photo_filename = secure_filename(photo_file.filename)
+
+                photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
+
+                photo_file.save(photo_path)
+
+                photo = f"uploads/{photo_filename}"
+
+        if 'video' in request.files:
+
+            video_file = request.files['video']
+
+            if video_file and allowed_file(video_file.filename):
+
+                video_filename = secure_filename(video_file.filename)
+
+                video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+
+                video_file.save(video_path)
+
+                video = f"uploads/{video_filename}"
+
+        create_post(user_id, post_content, photo, video)
 
     posts = get_posts()
+    
     notifs = get_follow_requests(user.id)
+
     central = pytz.timezone("US/Central")
 
     for post in posts:
+
         post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
 
     return render_template("index.html", posts=posts, user=user, notifs=notifs)
 
+@app.route("/create_post", methods=["GET", "POST"])
+
+def create_post():
+
+    if "user_id" not in session:
+
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        post_content = request.form.get("post")
+
+        photo = None
+
+        video = None
+
+        if 'photo' in request.files:
+
+            photo_file = request.files['photo']
+
+            if photo_file and allowed_file(photo_file.filename):
+
+                photo_filename = secure_filename(photo_file.filename)
+
+                photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
+
+                photo_file.save(photo_path)
+
+                photo = f"uploads/{photo_filename}"
+
+        if 'video' in request.files:
+
+            video_file = request.files['video']
+
+            if video_file and allowed_file(video_file.filename):
+
+                video_filename = secure_filename(video_file.filename)
+
+                video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+
+                video_file.save(video_path)
+
+                video = f"uploads/{video_filename}"
+
+        create_post_db(user_id, post_content, photo, video)
+
+        return redirect(url_for("index"))
+
+    return render_template("create_post.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -138,7 +230,7 @@ def edit_profile():
             file_extension = profile_picture.filename.rsplit(".", 1)[1].lower()
             filename = f"{user.username}.{file_extension}"
 
-            profile_picture_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            profile_picture_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], filename)
             profile_picture.save(profile_picture_path)
 
             user.profile_picture = f"profile_pics/{filename}"
@@ -192,7 +284,6 @@ def follow():
         return "Invalid action", 400
 
     return redirect(url_for("view_profile", username=followed_user.username))
-
 
 if __name__ == "__main__":
     with app.app_context():

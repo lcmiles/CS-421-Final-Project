@@ -39,7 +39,7 @@ body {
     align-items: center;
     margin-right: 30px;
  }
- .home-btn, .create-post-btn {
+ .home-btn, .create-post-btn, .view-post-btn {
     color: white;
     text-decoration: none;
     padding: 10px 20px;
@@ -51,8 +51,11 @@ body {
     transition: background-color 0.3s;
     margin-left: 15px;
  }
- .home-btn:hover, .create-post-btn:hover {
+ .home-btn:hover, .create-post-btn:hover, .view-post-btn {
     background-color: #2980b9;
+ }
+ .view-post-btn {
+    margin-left: 0px;
  }
  .dropdown {
     position: relative;
@@ -246,6 +249,7 @@ a.button:hover {
 
     flex-direction: column;
 
+    margin-bottom: 15px;
 }
 
 .post-header {

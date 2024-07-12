@@ -30,7 +30,32 @@
 
                 <div class="post-content">{{ post.content }}</div>
 
+                {% if post.photo %}
+
+                <div class="post-photo">
+
+                    <img src="{{ url_for('static', filename=post.photo) }}" alt="Post Photo">
+
+                </div>
+
+                {% endif %}
+
+                {% if post.video %}
+
+                <div class="post-video">
+
+                    <video controls>
+
+                        <source src="{{ url_for('static', filename=post.video) }}" type="video/mp4">
+
+                    </video>
+
+                </div>
+
+                {% endif %}
+
             </div>
+            <a>Comments: </a>
             {% for comment in comments %}
             <div class="comment">
             <div class="comment-box">

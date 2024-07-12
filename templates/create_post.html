@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Create Post</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container">
+
+        <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+
+            <input class="post-input-box" placeholder="Post Content" name="post" type="text" required>
+
+            <input type="file" name="photo">
+
+            <input type="file" name="video">
+
+            <input type="submit" value="Post">
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
+ 

@@ -89,7 +89,7 @@ def index():
         create_post(user_id, post_content, photo, video)
 
     posts = get_posts()
-
+    
     notifs = get_follow_requests(user.id)
 
     central = pytz.timezone("US/Central")
@@ -99,6 +99,58 @@ def index():
         post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
 
     return render_template("index.html", posts=posts, user=user, notifs=notifs)
+
+@app.route("/create_post", methods=["GET", "POST"])
+
+def create_post():
+
+    if "user_id" not in session:
+
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+
+        user_id = session["user_id"]
+
+        post_content = request.form.get("post")
+
+        photo = None
+
+        video = None
+
+        if 'photo' in request.files:
+
+            photo_file = request.files['photo']
+
+            if photo_file and allowed_file(photo_file.filename):
+
+                photo_filename = secure_filename(photo_file.filename)
+
+                photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
+
+                photo_file.save(photo_path)
+
+                photo = f"uploads/{photo_filename}"
+
+        if 'video' in request.files:
+
+            video_file = request.files['video']
+
+            if video_file and allowed_file(video_file.filename):
+
+                video_filename = secure_filename(video_file.filename)
+
+                video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+
+                video_file.save(video_path)
+
+                video = f"uploads/{video_filename}"
+
+        create_post_db(user_id, post_content, photo, video)
+
+        return redirect(url_for("index"))
+
+    return render_template("create_post.html")
 
 @app.route("/register", methods=["GET", "POST"])
 
@@ -233,7 +285,6 @@ def edit_profile():
             filename = f"{user.username}.{file_extension}"
 
             profile_picture_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], filename)
-
             profile_picture.save(profile_picture_path)
 
             user.profile_picture = f"profile_pics/{filename}"

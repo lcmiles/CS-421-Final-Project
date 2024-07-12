@@ -13,13 +13,6 @@ import os
 import pytz
 
 app = Flask(__name__)
-<<<<<<< HEAD
-app.config["SECRET_KEY"] = "your_secret_key"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
-app.config["UPLOAD_FOLDER"] = "static/uploads"
-
-=======
 
 app.config["SECRET_KEY"] = "your_secret_key"
 
@@ -29,7 +22,6 @@ app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
 
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 
->>>>>>> main
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
 
 CORS(app)
@@ -40,15 +32,12 @@ def allowed_file(filename):
 
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-<<<<<<< HEAD
-=======
 @app.errorhandler(500)
 
 def internal_error(error):
 
     return render_template('500.html', error=error), 500
 
->>>>>>> main
 @app.route("/", methods=["GET", "POST"])
 
 def index():
@@ -100,11 +89,7 @@ def index():
         create_post(user_id, post_content, photo, video)
 
     posts = get_posts()
-<<<<<<< HEAD
     
-=======
-
->>>>>>> main
     notifs = get_follow_requests(user.id)
 
     central = pytz.timezone("US/Central")
@@ -115,7 +100,6 @@ def index():
 
     return render_template("index.html", posts=posts, user=user, notifs=notifs)
 
-<<<<<<< HEAD
 @app.route("/create_post", methods=["GET", "POST"])
 
 def create_post():
@@ -168,8 +152,6 @@ def create_post():
 
     return render_template("create_post.html")
 
-=======
->>>>>>> main
 @app.route("/register", methods=["GET", "POST"])
 
 def register():
@@ -303,10 +285,6 @@ def edit_profile():
             filename = f"{user.username}.{file_extension}"
 
             profile_picture_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], filename)
-<<<<<<< HEAD
-=======
-
->>>>>>> main
             profile_picture.save(profile_picture_path)
 
             user.profile_picture = f"profile_pics/{filename}"

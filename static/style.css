@@ -39,7 +39,7 @@ body {
     align-items: center;
     margin-right: 30px;
  }
- .home-btn, .create-post-btn, .view-post-btn {
+ .home-btn, .create-post-btn {
     color: white;
     text-decoration: none;
     padding: 10px 20px;
@@ -51,11 +51,8 @@ body {
     transition: background-color 0.3s;
     margin-left: 15px;
  }
- .home-btn:hover, .create-post-btn:hover, .view-post-btn {
+ .home-btn:hover, .create-post-btn:hover {
     background-color: #2980b9;
- }
- .view-post-btn {
-    margin-left: 0px;
  }
  .dropdown {
     position: relative;
@@ -231,7 +228,7 @@ a.button:hover {
     background-color: #004896;
 }
 
-.post {
+.post, .comment-box{
 
     border: 1px solid #ddd;
 
@@ -241,7 +238,7 @@ a.button:hover {
 
     background-color: #f9f9f9;
 
-    padding-bottom: 30px;
+    padding-bottom: 15px;
 
 }
 
@@ -250,8 +247,6 @@ a.button:hover {
     display: flex;
 
     flex-direction: column;
-
-    margin-bottom: 15px;
 
 }
 
@@ -313,7 +308,7 @@ a.button:hover {
 
     border-radius: 5px;
 
-    width: 500px;
+    width:  500px;
 
     height: 500px;
 
@@ -381,7 +376,7 @@ a.button:hover {
     padding: 0;
 }
 
-.home-btn {
+.home-btn, .view-post-btn {
     color: white;
     text-decoration: none;
     padding: 8px 15px;
@@ -392,7 +387,7 @@ a.button:hover {
     font-size: 14px;
 }
 
-.home-btn:hover {
+.home-btn:hover, .view-post-btn:hover {
     background-color: #0056b3;
 }
 
@@ -510,4 +505,14 @@ h1 {
 
 button:disabled {
     cursor: not-allowed;
+}
+
+.comment-header {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+
 }

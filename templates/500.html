@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Internal Server Error</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Something went wrong!</h1>
+
+        <p>An unexpected error occurred. Please try again later.</p>
+
+        <div class="error-options">
+
+            <a href="{{ url_for('login') }}">Go to Login</a>
+
+            <a href="#" onclick="document.getElementById('error-details').style.display='block';">View Error Details</a>
+
+        </div>
+
+        <div id="error-details" style="display:none;">
+
+            <h2>Error Details:</h2>
+
+            <p>{{ error }}</p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+ 

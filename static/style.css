@@ -65,6 +65,12 @@ body {
     border-radius: 50%;
     margin-right: 10px;
  }
+ .profile-picture-profile-box {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 10px;
+ }
  .dropbtn {
     background-color: #3498db;
     color: white;

@@ -54,7 +54,7 @@
 
                 {% endif %}
                 <form action="{{url_for('server_like',post_id=post.id)}}" method="post">
-                        <input type="submit" value="Like post!">
+                        <input class=like-button type="image" src="..\static\assets\Icon-like-button-transparent-PNG.png">
                 </form>
                 <a>Likes: {{likes}}</a>
             </div>

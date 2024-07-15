@@ -394,6 +394,14 @@ def server_like(post_id):
     
     return redirect(url_for("post_page",post_id=post_id))
 
+@app.route('/search', methods=['GET'])
+def search_users():
+   query = request.args.get('query')
+   users = []
+   if query:
+       users = User.query.filter(User.username.contains(query)).all()
+   return render_template('search.html', users=users, query=query)
+
 if __name__ == "__main__":
 
     with app.app_context():

@@ -2,6 +2,8 @@ from datetime import datetime
 
 from typing import List
 
+from sqlalchemy import desc
+
 from sqlalchemy.orm import Mapped
 
 from flask_sqlalchemy import SQLAlchemy
@@ -103,8 +105,12 @@ def create_post_db(user_id, post_content, photo=None, video=None):
 
     db.session.commit()
 
-def get_posts():
-    return Post.query.order_by(Post.timestamp.desc()).all()
+def get_posts(user_id=None):
+   if user_id:
+       return Post.query.filter_by(user_id=user_id).order_by(desc(Post.timestamp)).all()
+   else:
+       return Post.query.order_by(desc(Post.timestamp)).all()
+ 
 
 def get_post_by_id(post_id):
     

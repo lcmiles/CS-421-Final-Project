@@ -215,6 +215,28 @@
             </div>
 
         </div>
+        
+        <script>
+
+            document.addEventListener("DOMContentLoaded", function () {
+    
+                var elements = document.getElementsByClassName("time");
+    
+                for (var i = 0; i < elements.length; i++) {
+    
+                    var element = elements[i];
+    
+                    var utcTime = element.getAttribute("data-timestamp");
+    
+                    var localTime = new Date(utcTime);
+    
+                    element.textContent = localTime.toLocaleString() + " CT";
+    
+                }
+    
+            });
+    
+        </script>
 
     </body>
 

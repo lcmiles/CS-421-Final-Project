@@ -6,7 +6,7 @@
 </head>
 <body>
     {% include 'navbar.html' %}
-    {% for post in post %}
+
     <div class="container">
         <div class="post">
 
@@ -25,6 +25,8 @@
                     {% endif %}
 
                     <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+
+                    <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
 
                 </div>
 
@@ -78,9 +80,29 @@
             <input style = "margin-left: 0px;" class="comment-input-box" placeholder="Comment" name="comment" type="text" required>
             <input type="submit" value="Post">
         </form>
-        {% endfor %}
         </div>
     </div>
     
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var elements = document.getElementsByClassName("time");
+
+            for (var i = 0; i < elements.length; i++) {
+
+                var element = elements[i];
+
+                var utcTime = element.getAttribute("data-timestamp");
+
+                var localTime = new Date(utcTime);
+
+                element.textContent = localTime.toLocaleString() + " CT";
+
+            }
+
+        });
+
+    </script>
 </body>
 </html>

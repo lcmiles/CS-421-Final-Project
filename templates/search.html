@@ -24,7 +24,7 @@
 
         <form action="{{ url_for('search_users') }}" method="GET">
 
-            <input style="width: 85%" type="text" name="query" placeholder="Enter username" required>
+            <input type="text" name="query" placeholder="Enter username" required>
 
             <button type="submit">Search</button>
 
@@ -38,7 +38,13 @@
 
                     {% for user in users %}
 
-                        <li><img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture"><a class="username" href="{{ url_for('view_profile', username=user.username) }}">{{ user.username }}</a></li>
+                        <li>
+                            
+                            <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+                            
+                            <a class="username" href="{{ url_for('view_profile', username=user.username) }}">{{ user.username }}</a>
+                        
+                        </li>
 
                     {% endfor %}
 

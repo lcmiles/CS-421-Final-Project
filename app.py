@@ -45,6 +45,10 @@ def index():
     if "user_id" not in session:
 
         return redirect(url_for("login"))
+    
+    if not User.query.first():
+        
+        return redirect(url_for("login"))
 
     user = get_user_by_id(session["user_id"])
 

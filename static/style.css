@@ -586,7 +586,6 @@ button:disabled {
     margin-bottom: 20px;
     color: #333;
 }
-/* Form elements for auth pages */
 .auth-container form {
     display: flex;
     flex-direction: column;
@@ -623,7 +622,6 @@ button:disabled {
 .auth-container button:hover {
     background-color: #0056b3;
 }
-/* Flash messages styling for auth pages */
 .auth-container .flashes {
     list-style-type: none;
     padding: 0;
@@ -643,7 +641,6 @@ button:disabled {
     background-color: #d4edda;
     color: #155724;
 }
-/* Specific page elements for auth pages */
 .auth-container .login-button,
 .auth-container .logout-button {
     width: 100%;

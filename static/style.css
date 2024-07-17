@@ -386,6 +386,14 @@ a.button:hover {
     list-style-type: none;
     gap: 0.3em;
     padding: 0;
+    align-items: center;
+}
+
+.followers li,
+.following li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .home-btn, .view-post-btn {

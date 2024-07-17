@@ -85,7 +85,9 @@
                     <ul class="followers">
                         {% for follow in user.followers %}
                         <li>
+                            <img src="{{ url_for('static', filename=follow.follower.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
                             <a
+                                class="username"
                                 href="{{ url_for('view_profile', username=follow.follower.username) }}"
                                 >{{ follow.follower.username }}</a
                             >
@@ -97,7 +99,9 @@
                     <ul class="following">
                         {% for follow in user.following %}
                         <li>
+                            <img src="{{ url_for('static', filename=follow.followed.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
                             <a
+                                class="username"
                                 href="{{ url_for('view_profile', username=follow.followed.username) }}"
                                 >{{ follow.followed.username }}</a
                             >

@@ -362,6 +362,9 @@ a.button:hover {
     margin: 10px 0;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
 }
 
 .profile-box {
@@ -660,3 +663,18 @@ button:disabled {
     display: inline-block;
     width: 100%;
 }
+.post-photo {
+    display: flex;
+    flex-direction: column;
+}
+.post-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+ }
+ .post {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+ }

@@ -18,58 +18,57 @@
 
         {% for post in posts %}
 
-        <div class="post">
+            <div onclick="location.href='{{ url_for('post_page',post_id=post.id)}}';" class="post">
 
-            <div class="post-box">
+                <div class="post-box">
 
-                <div class="post-header">
+                    <div class="post-header">
 
-                    {% if post.user.profile_picture %}
+                        {% if post.user.profile_picture %}
 
-                    <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+                        <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
 
-                    {% else %}
+                        {% else %}
 
-                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+                        <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+
+                        {% endif %}
+
+                        <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+
+                        <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+
+                    </div>
+
+                    <div class="post-content">{{ post.content }}</div>
+
+                    {% if post.photo %}
+
+                    <div class="post-photo">
+
+                        <img src="{{ url_for('static', filename=post.photo) }}" alt="Post Photo">
+
+                    </div>
 
                     {% endif %}
 
-                    <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+                    {% if post.video %}
 
-                    <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    <div class="post-video">
 
-                </div>
+                        <video controls>
 
-                <div class="post-content">{{ post.content }}</div>
+                            <source src="{{ url_for('static', filename=post.video) }}" type="video/mp4">
 
-                {% if post.photo %}
+                        </video>
 
-                <div class="post-photo">
+                    </div>
 
-                    <img src="{{ url_for('static', filename=post.photo) }}" alt="Post Photo">
-
-                </div>
-
-                {% endif %}
-
-                {% if post.video %}
-
-                <div class="post-video">
-
-                    <video controls>
-
-                        <source src="{{ url_for('static', filename=post.video) }}" type="video/mp4">
-
-                    </video>
+                    {% endif %}
 
                 </div>
-
-                {% endif %}
 
             </div>
-
-            <a href="{{ url_for('post_page',post_id=post.id)}}" class="view-post-btn">View Post</a>
-        </div>
 
         {% endfor %}
 

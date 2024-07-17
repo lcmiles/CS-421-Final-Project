@@ -237,30 +237,22 @@ def logout():
     return redirect(url_for("login"))
 
 @app.route("/profile/<username>", methods=["GET"])
-
 def view_profile(username):
-
     user = get_user_by_username(username)
-
     if not user:
-
         return "User not found", 404
-
     notifs = get_follow_requests(session["user_id"])
-
+    user_posts = get_posts()
+    central = pytz.timezone("US/Central")
+    for post in user_posts:
+        post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
     return render_template(
-
         "profile.html",
-
         session=session,
-
         user=user,
-
         get_follow_status=get_follow_status,
-
         notifs=notifs,
-
-    )
+        posts=user_posts)
 
 @app.route("/edit_profile", methods=["GET", "POST"])
 

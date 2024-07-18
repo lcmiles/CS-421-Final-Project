@@ -28,7 +28,7 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
 
 CORS(app)
 
-db = SQLAlchemy(app)
+db.init_app(app)
 
 def allowed_file(filename):
 

@@ -16,15 +16,15 @@
 
     <div class="container">
 
+        <p> Please enter the text and/or upload a photo/video with your post below:</p>
+
         <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
 
-            <input class="post-input-box" placeholder="Enter you text here" name="post" type="text" required>
+            <textarea class="post-input-box" placeholder="Enter your text here" name="post" type="text" required></textarea>
 
-            <a style="margin-left: 15px;">Upload a photo: </a> <input type="file" name="photo">
+            <a> Upload a photo/video: </a> <input type="file" name="photo">
 
-            <a>Upload a video: </a> <input type="file" name="video">
-
-            <input type="submit" value="Post">
+            <input class="post-button" type="submit" value="Post">
 
         </form>
 

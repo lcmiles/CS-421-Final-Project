@@ -408,7 +408,9 @@ def server_like(post_id):
 def search_users():
    query = request.args.get('query')
    users = []
-   if query:
+   if query == "*":
+       users = User.query.all()
+   elif query:
        users = User.query.filter(User.username.contains(query)).all()
    return render_template('search.html', users=users, query=query)
 

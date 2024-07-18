@@ -22,9 +22,11 @@
 
         <h1>Search Users</h1>
 
+        <p1> Please enter a partial or full username below to search for specific users or "*" to list all users:</p1>
+
         <form action="{{ url_for('search_users') }}" method="GET">
 
-            <input type="text" name="query" placeholder="Enter username" required>
+            <input class="search-box" type="text" name="query" placeholder="Enter username" required>
 
             <button type="submit">Search</button>
 

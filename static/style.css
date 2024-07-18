@@ -83,6 +83,7 @@ body {
     transition: background-color 0.3s;
     display: flex;
     align-items: center;
+    margin-left: 15px;
  }
  .dropbtn:hover {
     background-color: #2980b9;
@@ -233,7 +234,6 @@ a.button {
     font-size: 16px;
     margin-top: 15px;
     text-decoration: none;
-    margin-left: 15px;
 }
 
 input[type="submit"]:hover,
@@ -430,8 +430,16 @@ a.button:hover {
 }
 
 .post-input-box {
-    width: 90%;
+    width: 97.5%;
+    height: 300px;
     margin-right: 10px;
+    padding: 10px;
+    resize: none;
+}
+
+.post-button {
+    display: flex;
+    float: right;
 }
 
 .home-button {
@@ -548,35 +556,39 @@ button:disabled {
     border-radius: 50%;
     margin-right: 10px;
 }
- .search-results ul {
+.search-box {
+    width: 85%;
+    margin-right: 25px;
+}
+.search-results ul {
     list-style-type: none;
     padding: 0;
  }
- .search-results li {
+.search-results li {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
  }
- .search-results a {
+.search-results a {
     text-decoration: none;
     color: #3498db;
     font-size: 18px;
  }
- .search-results a:hover {
+.search-results a:hover {
     text-decoration: none;
     color: #0056b3;
  }
- .search-results p {
+.search-results p {
     font-size: 18px;
     color: #888;
  }
 
- label {
+label {
 
     margin-right: 15px;
 
  }
- .auth-body {
+.auth-body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;

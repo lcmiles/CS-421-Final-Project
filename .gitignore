@@ -165,3 +165,7 @@ node_modules/
 
 # custom ignore
 Final Project Plan.docx
+schema.sql
+.gitignore
+instance/database.db
+sqlite3.exe

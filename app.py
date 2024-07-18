@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:L+:lpCKc_53%@$~)@34.135.99.182/final-project-db'
 
 app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
 

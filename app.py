@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, get_flashed_messages
 
 from flask_cors import CORS
 
@@ -159,94 +159,54 @@ def create_post():
     return render_template("create_post.html")
 
 @app.route("/register", methods=["GET", "POST"])
-
 def register():
-
-    if request.method == "POST":
-
-        username = request.form.get("username")
-
-        email = request.form.get("email")
-
-        password = request.form.get("password")
-
-        existing_user = User.query.filter_by(username=username).first()
-
-        existing_email = User.query.filter_by(email=email).first()
-
-
-        if existing_user:
-
-            flash(
-
-                "Username already taken. Please choose a different username.", "error"
-
-            )
-
-            return redirect(url_for("register"))
-        
-        if existing_email:
-
-            flash(
-
-                "Email already taken. Please choose a different email.", "error"
-
-            )
-
-            return redirect(url_for("register"))
-
-        new_user = User(
-
-            username=username, email=email, password=generate_password_hash(password)
-
-        )
-
-        db.session.add(new_user)
-
-        db.session.commit()
-
-        return redirect(url_for("thankyou"))
-
-    return render_template("register.html")
+   if request.method == "POST":
+       username = request.form.get("username")
+       email = request.form.get("email")
+       password = request.form.get("password")
+       existing_user = User.query.filter_by(username=username).first()
+       existing_email = User.query.filter_by(email=email).first()
+       if existing_user:
+           flash("Username already taken. Please choose a different username.", "error")
+           return redirect(url_for("register"))
+       if existing_email:
+           flash("Email already taken. Please choose a different email.", "error")
+           return redirect(url_for("register"))
+       new_user = User(username=username, email=email, password=generate_password_hash(password))
+       db.session.add(new_user)
+       db.session.commit()
+       session.clear()
+       session["user_id"] = new_user.id
+       session["username"] = new_user.username
+       session["profile_picture"] = new_user.profile_picture
+       return redirect(url_for("thankyou"))
+   return render_template("register.html")
 
 @app.route("/thankyou", methods=["GET", "POST"])
-
 def thankyou():
-    return render_template("thankyou.html")
+   if "user_id" not in session:
+        return redirect(url_for("login"))
+   get_flashed_messages()
+   return render_template("thankyou.html")
 
 @app.route("/login", methods=["GET", "POST"])
-
 def login():
-
-    if request.method == "POST":
-
-        email = request.form.get("email")
-
-        password = request.form.get("password")
-
-        user = get_user_by_email(email)
-
-        if user:
-
-            if check_password_hash(user.password, password):
-
-                session["user_id"] = user.id
-
-                session["username"] = user.username
-
-                session["profile_picture"] = user.profile_picture
-
-                return redirect(url_for("index"))
-
-            else:
-
-                flash("Incorrect password. Please try again.", "error")
-
-        else:
-
-            flash("Unrecognized email. Please try again.", "error")
-
-    return render_template("login.html")
+   if request.method == "POST":
+       session.clear()  # Clear any existing session
+       email = request.form.get("email")
+       password = request.form.get("password")
+       user = get_user_by_email(email)
+       if user:
+           if check_password_hash(user.password, password):
+               session["user_id"] = user.id
+               session["username"] = user.username
+               session["profile_picture"] = user.profile_picture
+               return redirect(url_for("index"))
+           else:
+               flash("Incorrect password. Please try again.", "error")
+       else:
+           flash("Unrecognized email. Please try again.", "error")
+   return render_template("login.html")
 
 @app.route("/logout", methods=["POST"])
 

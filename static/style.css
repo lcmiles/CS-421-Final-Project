@@ -489,6 +489,7 @@ h3 {
 
 h1 {
     text-align: center;
+    margin-bottom: 100px;
 }
 
 .profile-container {
@@ -596,6 +597,7 @@ button:disabled {
 .auth-container h2 {
     margin-bottom: 20px;
     color: #333;
+    text-align: center;
 }
 .auth-container form {
     display: flex;
@@ -617,7 +619,7 @@ button:disabled {
 }
 .auth-container input[type="submit"],
 .auth-container button {
-    background-color: #007BFF;
+    background-color: #28a745;
     color: white;
     padding: 10px;
     border: none;
@@ -625,11 +627,16 @@ button:disabled {
     cursor: pointer;
     font-size: 14px;
     margin-top: 10px;
+    margin-left: 0px;
+    width: 50%;
+    align-self: center;
 }
 .auth-container button {
-    background-color: #28a745;
+    background-color: #007BFF;
 }
-.auth-container input[type="submit"]:hover,
+.auth-container input[type="submit"]:hover {
+    background-color: #23913c;
+}
 .auth-container button:hover {
     background-color: #0056b3;
 }
@@ -672,9 +679,13 @@ button:disabled {
     color: inherit;
     display: block;
  }
- .post {
+.post {
     border: 1px solid #ddd;
     margin-bottom: 10px;
     background-color: #f9f9f9;
     cursor: pointer;
  }
+h4 {
+    color: white;
+    font-size: 20px;
+}

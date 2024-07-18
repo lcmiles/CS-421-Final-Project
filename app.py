@@ -12,7 +12,11 @@ import os
 
 import pytz
 
+import secrets
+
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = secrets.token_hex(16)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
@@ -201,9 +205,14 @@ def register():
 
         db.session.commit()
 
-        return redirect(url_for("login"))
+        return redirect(url_for("thankyou"))
 
     return render_template("register.html")
+
+@app.route("/thankyou", methods=["GET", "POST"])
+
+def thankyou():
+    return render_template("thankyou.html")
 
 @app.route("/login", methods=["GET", "POST"])
 

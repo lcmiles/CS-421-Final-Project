@@ -165,3 +165,4 @@ node_modules/
 
 # custom ignore
 Final Project Plan.docx
+instance/database.db

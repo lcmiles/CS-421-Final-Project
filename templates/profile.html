@@ -2,153 +2,167 @@
 
 <html>
 
-    <head>
+<head>
 
-        <title>{{ user.username }}'s Profile</title>
+    <title>{{ user.username }}'s Profile</title>
 
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
 
-    </head>
+</head>
 
-    <body>
+<body>
 
-        {% include 'navbar.html' %}
+    {% include 'navbar.html' %}
 
-        <div class="container">
+    <div class="container">
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
 
-                {% if messages %}
+            {% if messages %}
 
-                    <ul class="flashes">
+                <ul class="flashes">
 
-                        {% for category, message in messages %}
+                    {% for category, message in messages %}
 
-                            <li class="{{ category }}">{{ message }}</li>
+                        <li class="{{ category }}">{{ message }}</li>
 
-                        {% endfor %}
+                    {% endfor %}
 
-                    </ul>
+                </ul>
+
+            {% endif %}
+
+        {% endwith %}
+
+        <div class="profile-box">
+
+            {% if user.profile_picture %}
+
+                <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture"
+
+                    class="profile-picture-profile-box" />
+
+            {% else %}
+
+                <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture"
+
+                    class="profile-picture" />
+
+            {% endif %}
+
+            <h1>{{ user.username }}</h1>
+
+            <div class="profile-buttons">
+
+                {% if session['user_id'] != user.id %}
+
+                    {% if get_follow_status(session['user_id'], user.id) == -1 %}
+
+                        <form action="{{ url_for('follow', user=user.id, action='request') }}" method="post">
+
+                            <button type="submit" class="profile-button">Follow</button>
+
+                        </form>
+
+                    {% elif get_follow_status(session['user_id'], user.id) == 0 %}
+
+                        <button class="profile-button" disabled>Request Pending</button>
+
+                    {% elif get_follow_status(session['user_id'], user.id) == 1 %}
+
+                        <form action="{{ url_for('follow', user=user.id, action='unfollow') }}" method="post">
+
+                            <button type="submit" class="profile-button">Unfollow</button>
+
+                        </form>
+
+                    {% endif %}
 
                 {% endif %}
 
-            {% endwith %}
+            </div>
 
-            <div class="profile-box">
+            {% if user.followers or user.following %}
 
-                {% if user.profile_picture %}
+                <div class="profile-container">
 
-                    <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture" class="profile-picture-profile-box" />
+                    {% if user.followers %}
 
-                {% else %}
+                        <h3>Followers:</h3>
 
-                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="profile-picture" />
+                        <ul class="followers">
 
-                {% endif %}
+                            {% for follow in user.followers %}
 
-                <h1>{{ user.username }}</h1>
+                                <li>
 
-                <div class="profile-buttons">
+                                    <img src="{{ url_for('static', filename=follow.follower.profile_picture) }}"
 
-                    {% if session['user_id'] != user.id %}
+                                        alt="Profile Picture" class="post-profile-picture">
 
-                        {% if get_follow_status(session['user_id'], user.id) == -1 %}
+                                    <a class="username"
 
-                            <form action="{{ url_for('follow', user=user.id, action='request') }}" method="post">
+                                        href="{{ url_for('view_profile', username=follow.follower.username) }}">{{ follow.follower.username }}</a>
 
-                                <button type="submit" class="profile-button">Follow</button>
+                                </li>
 
-                            </form>
+                            {% endfor %}
 
-                        {% elif get_follow_status(session['user_id'], user.id) == 0 %}
+                        </ul>
 
-                            <button class="profile-button" disabled>Request Pending</button>
+                    {% endif %}
 
-                        {% elif get_follow_status(session['user_id'], user.id) == 1 %}
+                    {% if user.following %}
 
-                            <form action="{{ url_for('follow', user=user.id, action='unfollow') }}" method="post">
+                        <h3>Following:</h3>
 
-                                <button type="submit" class="profile-button">Unfollow</button>
+                        <ul class="following">
 
-                            </form>
+                            {% for follow in user.following %}
 
-                        {% endif %}
+                                <li>
+
+                                    <img src="{{ url_for('static', filename=follow.followed.profile_picture) }}"
+
+                                        alt="Profile Picture" class="post-profile-picture">
+
+                                    <a class="username"
+
+                                        href="{{ url_for('view_profile', username=follow.followed.username) }}">{{ follow.followed.username }}</a>
+
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
 
                     {% endif %}
 
                 </div>
 
-                {% if user.followers or user.following %}
+            {% endif %}
 
-                    <div class="profile-container">
+            <div class="profile-container">
 
-                        {% if user.followers %}
+                <h3>Email:</h3>
 
-                            <h3>Followers:</h3>
+                <p class="email">{{ user.email }}</p>
 
-                            <ul class="followers">
+            </div>
 
-                                {% for follow in user.followers %}
-
-                                    <li>
-
-                                        <img src="{{ url_for('static', filename=follow.follower.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
-
-                                        <a class="username" href="{{ url_for('view_profile', username=follow.follower.username) }}">{{ follow.follower.username }}</a>
-
-                                    </li>
-
-                                {% endfor %}
-
-                            </ul>
-
-                        {% endif %}
-
-                        {% if user.following %}
-
-                            <h3>Following:</h3>
-
-                            <ul class="following">
-
-                                {% for follow in user.following %}
-
-                                    <li>
-
-                                        <img src="{{ url_for('static', filename=follow.followed.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
-
-                                        <a class="username" href="{{ url_for('view_profile', username=follow.followed.username) }}">{{ follow.followed.username }}</a>
-
-                                    </li>
-
-                                {% endfor %}
-
-                            </ul>
-
-                        {% endif %}
-
-                    </div>
-
-                {% endif %}
+            {% if user.bio %}
 
                 <div class="profile-container">
 
-                    <h3>Email:</h3>
+                    <h3>Bio:</h3>
 
-                    <p class="email">{{ user.email }}</p>
+                    <p class="bio">{{ user.bio }}</p>
 
                 </div>
 
-                {% if user.bio %}
+            {% endif %}
 
-                    <div class="profile-container">
-
-                        <h3>Bio:</h3>
-
-                        <p class="bio">{{ user.bio }}</p>
-
-                    </div>
-
-                {% endif %}
+            {% if posts %}
 
                 <div class="profile-container">
 
@@ -164,15 +178,23 @@
 
                                     {% if post.user.profile_picture %}
 
-                                        <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+                                        <img src="{{ url_for('static', filename=post.user.profile_picture) }}"
+
+                                            alt="Profile Picture" class="post-profile-picture">
 
                                     {% else %}
 
-                                        <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
+                                        <img src="{{ url_for('static', filename='default.png') }}"
+
+                                            alt="Default Profile Picture" class="post-profile-picture">
 
                                     {% endif %}
 
-                                    <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+                                    <span class="username-container"><a style="color:dodgerblue"
+
+                                            href="{{ url_for('view_profile', username=post.user.username) }}"
+
+                                            class="username">{{ post.user.username }}</a></span>
 
                                     <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
 
@@ -207,37 +229,39 @@
                             </div>
 
                         </div>
-                        
+
                     {% endfor %}
 
                 </div>
 
-            </div>
+            {% endif %}
 
         </div>
-        
-        <script>
 
-            document.addEventListener("DOMContentLoaded", function () {
-    
-                var elements = document.getElementsByClassName("time");
-    
-                for (var i = 0; i < elements.length; i++) {
-    
-                    var element = elements[i];
-    
-                    var utcTime = element.getAttribute("data-timestamp");
-    
-                    var localTime = new Date(utcTime);
-    
-                    element.textContent = localTime.toLocaleString() + " CT";
-    
-                }
-    
-            });
-    
-        </script>
+    </div>
 
-    </body>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var elements = document.getElementsByClassName("time");
+
+            for (var i = 0; i < elements.length; i++) {
+
+                var element = elements[i];
+
+                var utcTime = element.getAttribute("data-timestamp");
+
+                var localTime = new Date(utcTime);
+
+                element.textContent = localTime.toLocaleString() + " CT";
+
+            }
+
+        });
+
+    </script>
+
+</body>
 
 </html> 

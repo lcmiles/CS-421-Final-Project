@@ -170,11 +170,24 @@ def register():
 
         existing_user = User.query.filter_by(username=username).first()
 
+        existing_email = User.query.filter_by(email=email).first()
+
+
         if existing_user:
 
             flash(
 
                 "Username already taken. Please choose a different username.", "error"
+
+            )
+
+            return redirect(url_for("register"))
+        
+        if existing_email:
+
+            flash(
+
+                "Email already taken. Please choose a different email.", "error"
 
             )
 

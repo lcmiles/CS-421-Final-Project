@@ -16,9 +16,15 @@ import secrets
 
 app = Flask(__name__)
 
+PASSWORD = "L+:lpCKc_53%@$~)"
+PUBLIC_IP_ADDRESS="34.135.99.182"
+PROJECT_ID="cs-421-final-project"
+DBNAME="final-project-db"
+INSTANCE_NAME="final-project-db"
+
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:L+:lpCKc_53%@$~)@34.135.99.182/final-project-db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql + mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}/{DBNAME}?unix_socket =/cloudsql/{PROJECT_ID}:{INSTANCE_NAME}"
 
 app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
 
@@ -28,7 +34,7 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
 
 CORS(app)
 
-db.init_app(app)
+db = SQLAlchemy(app)
 
 def allowed_file(filename):
 

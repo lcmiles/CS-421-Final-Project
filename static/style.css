@@ -646,7 +646,7 @@ button:disabled {
 .auth-container .flashes li.error {
     background-color: #f8d7da;
     color: #721c24;
-    width: max-content;
+    width: 118%;
 }
 .auth-container .flashes li.success {
     background-color: #d4edda;

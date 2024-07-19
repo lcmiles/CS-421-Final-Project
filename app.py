@@ -23,8 +23,8 @@ db_pass = os.environ["DB_PASS"]
 db_name = os.environ["DB_NAME"]
 db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
 instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
-DB_URI = f"postgresql+pg8000://{db_user}:{db_pass}@/{db_name}?unix_sock={db_socket_dir}/{instance_connection_name}/.s.PGSQL.5432"
 
+app.config["SQLALCHEMY_DATABASE_URI"]= f"mysql + mysqldb://root:{db_pass}@/{db_name}?unix_sock={db_socket_dir}/{instance_connection_name}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
 app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"

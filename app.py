@@ -1,8 +1,10 @@
+from dotenv import load_dotenv
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, get_flashed_messages
 
 from flask_cors import CORS
 
-import pymysql
+import sqlalchemy
 
 from models import *
 
@@ -18,23 +20,25 @@ import secrets
 
 app = Flask(__name__)
 
-db_user = os.environ.get('CLOUD_SQL_USERNAME')
-db_password = os.environ.get('CLOUD_SQL_PASSWORD')
-db_name = os.environ.get('CLOUD_SQL_DATABASE_NAME')
-db_connection_name = os.environ.get('CLOUD_SQL_CONNECTION_NAME')
+def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
+    """Initializes a Unix socket connection pool for a Cloud SQL instance of MySQL."""
+    db_user = os.environ["DB_USER"]
+    db_pass = os.environ["DB_PASS"]
+    db_name = os.environ["DB_NAME"]
+    unix_socket_path = os.environ["INSTANCE_UNIX_SOCKET"]
 
-def open_connection():
-    unix_socket = '/cloudsql/{}'.format(db_connection_name)
-    try:
-        if os.environ.get('GAE_ENV') == 'standard':
-            conn = pymysql.connect(user=db_user,
-                                    password=db_password,
-                                    unix_socket=unix_socket,
-                                    db=db_name,
-                                    cursorclass=pymysql.cursors.DictCursor)
-    except pymysql.MySQLError as e:
-        return e
-    return conn
+    pool = sqlalchemy.create_engine(
+        sqlalchemy.engine.url.URL.create(
+            drivername="mysql+pymysql",
+            username=db_user,
+            password=db_pass,
+            database=db_name,
+            query={"unix_socket": unix_socket_path},
+        ),
+    )
+    return pool
+
+db = SQLAlchemy(app)
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 

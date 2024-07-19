@@ -18,7 +18,12 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
-app.config["SQLALCHEMY_DATABASE_URI"]= 'mysql+pymysql://root:qP8&4=iQ[8o9|(ST`@34.123.226.16/sql-database'
+db_user = os.environ["DB_USER"]
+db_pass = os.environ["DB_PASS"]
+db_name = os.environ["DB_NAME"]
+db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
+instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
+DB_URI = f"postgresql+pg8000://{db_user}:{db_pass}@/{db_name}?unix_sock={db_socket_dir}/{instance_connection_name}/.s.PGSQL.5432"
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
@@ -382,4 +387,4 @@ if __name__ == "__main__":
 
         db.create_all()
 
-    app.run(debug=True,port="8080",host="0.0.0.0")
+    app.run(debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))

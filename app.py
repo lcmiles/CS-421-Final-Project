@@ -2,11 +2,17 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 
 from flask_cors import CORS
 
+import sqlalchemy
+
 from models import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from werkzeug.utils import secure_filename
+
+from google.cloud.sql.connector import Connector
+
+from dotenv import load_dotenv
 
 import os
 
@@ -14,11 +20,37 @@ import pytz
 
 import secrets
 
+load_dotenv()
+
 app = Flask(__name__)
+connector = Connector()
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:AIrA$V{q$7:80J77@34.42.182.194/cs-421-final-project-db'  
+# Environment variables
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+DB_NAME = os.getenv("DB_NAME")
+DB_CONNECTION_NAME = os.getenv("DB_CONNECTION_NAME")
+# Ensure environment variables are set
+if not all([DB_USER, DB_PASS, DB_NAME, DB_CONNECTION_NAME]):
+   raise ValueError("One or more required environment variables are not set.")
+def getconn() -> sqlalchemy.engine.base.Engine:
+   try:
+       conn = connector.connect(
+           DB_CONNECTION_NAME,
+           "mysql+mysqlconnector",
+           user=DB_USER,
+           password=DB_PASS,
+           db=DB_NAME,
+       )
+       return conn
+   except Exception as e:
+       raise RuntimeError(f"Failed to connect to the database: {e}")
+# Create the SQLAlchemy engine with Unix socket connection
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+   f"mysql+mysqlconnector://{DB_USER}:{DB_PASS}@34.42.182.194/{DB_NAME}?unix_socket=/cloudsql/{DB_CONNECTION_NAME}"
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"

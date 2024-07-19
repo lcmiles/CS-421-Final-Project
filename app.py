@@ -10,6 +10,8 @@ from werkzeug.utils import secure_filename
 
 from google.cloud.sql.connector import Connector
 
+from dotenv import load_dotenv
+
 import os
 
 import pytz
@@ -20,6 +22,8 @@ app = Flask(__name__)
 connector = Connector()
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
+
+load_dotenv()
 
 DB_USER = os.getenv("DB_USER")
 DB_PASS = os.getenv("DB_PASS")

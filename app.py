@@ -18,13 +18,7 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
-db_user = os.environ["DB_USER"]
-db_pass = os.environ["DB_PASS"]
-db_name = os.environ["DB_NAME"]
-db_socket_dir = os.environ.get("DB_SOCKET_DIR", "/cloudsql")
-instance_connection_name = os.environ["INSTANCE_CONNECTION_NAME"]
-
-app.config["SQLALCHEMY_DATABASE_URI"]= f"mysql + mysqldb://{db_user}:{db_pass}@/{db_name}?unix_sock={db_socket_dir}/{instance_connection_name}"
+app.config["SQLALCHEMY_DATABASE_URI"]= 'mysql+pymysql://cs-421-final-project-sql-user:AIrA$V{q$7:80J77@34.42.182.194/cs-421-final-project-db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
 app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"

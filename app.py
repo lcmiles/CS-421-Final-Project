@@ -16,15 +16,9 @@ import secrets
 
 app = Flask(__name__)
 
-PASSWORD ="qP8&4=iQ[8o9|(ST`"
-PUBLIC_IP_ADDRESS ="34.123.226.16"
-DBNAME ="mysql"
-PROJECT_ID ="cs-421-final-project"
-INSTANCE_NAME ="cs-421-final-project-db"
-
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
-app.config["SQLALCHEMY_DATABASE_URI"]= f"mysql + mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}/{DBNAME}?unix_socket =/cloudsql/{PROJECT_ID}:{INSTANCE_NAME}"
+app.config["SQLALCHEMY_DATABASE_URI"]= 'mysql+pymysql://root:qP8&4=iQ[8o9|(ST`@34.123.226.16/sql-database'
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 

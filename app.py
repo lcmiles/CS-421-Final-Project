@@ -14,8 +14,6 @@ import pytz
 
 import secrets
 
-import pymysql
-
 app = Flask(__name__)
 
 LOCAL_TESTING = False #set True if running locally

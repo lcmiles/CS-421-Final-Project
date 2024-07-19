@@ -28,6 +28,8 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
     unix_socket_path = os.environ["INSTANCE_UNIX_SOCKET"]
 
     pool = sqlalchemy.create_engine(
+        # Equivalent URL:
+        # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=<socket_path>/<cloud_sql_instance_name>
         sqlalchemy.engine.url.URL.create(
             drivername="mysql+pymysql",
             username=db_user,
@@ -37,6 +39,8 @@ def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
         ),
     )
     return pool
+
+app.config["SQLALCHEMY_DATABASE_URI"] = connect_unix_socket()
 
 db = SQLAlchemy(app)
 

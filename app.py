@@ -8,10 +8,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from werkzeug.utils import secure_filename
 
-from google.cloud.sql.connector import Connector
-
-from dotenv import load_dotenv
-
 import os
 
 import pytz
@@ -19,27 +15,10 @@ import pytz
 import secrets
 
 app = Flask(__name__)
-connector = Connector()
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
-load_dotenv()
-
-DB_USER = os.getenv("DB_USER")
-DB_PASS = os.getenv("DB_PASS")
-DB_NAME = os.getenv("DB_NAME")
-DB_CONNECTION_NAME = os.getenv("DB_CONNECTION_NAME")
-def getconn() -> None:
-   conn = connector.connect(
-       DB_CONNECTION_NAME,
-       "pymysql",
-       user=DB_USER,
-       password=DB_PASS,
-       db=DB_NAME
-   )
-   return conn
-# Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector:///?unix_socket={}'.format(getconn())
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:AIrA$V{q$7:80J77@34.42.182.194/cs-421-final-project-db'  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"

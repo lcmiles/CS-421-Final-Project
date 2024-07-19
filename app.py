@@ -1,10 +1,6 @@
-from dotenv import load_dotenv
-
 from flask import Flask, render_template, request, redirect, url_for, session, flash, get_flashed_messages
 
 from flask_cors import CORS
-
-import sqlalchemy
 
 from models import *
 
@@ -20,27 +16,13 @@ import secrets
 
 app = Flask(__name__)
 
-def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
-    """Initializes a Unix socket connection pool for a Cloud SQL instance of MySQL."""
-    db_user = os.environ["DB_USER"]
-    db_pass = os.environ["DB_PASS"]
-    db_name = os.environ["DB_NAME"]
-    unix_socket_path = os.environ["INSTANCE_UNIX_SOCKET"]
+LOCAL_TESTING = False #set True if running locally
 
-    pool = sqlalchemy.create_engine(
-        # Equivalent URL:
-        # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=<socket_path>/<cloud_sql_instance_name>
-        sqlalchemy.engine.url.URL.create(
-            drivername="mysql+pymysql",
-            username=db_user,
-            password=db_pass,
-            database=db_name,
-            query={"unix_socket": unix_socket_path},
-        ),
-    )
-    return pool
+if LOCAL_TESTING == True:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = connect_unix_socket()
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:AIrA$V{q$7:80J77@/cs-421-final-project-db?unix_socket=/cloudsql/cs-421-final-project:us-central1:cs-421-final-project-sql-instance/cs-421-final-project-sql-instance'
 
 db = SQLAlchemy(app)
 
@@ -53,10 +35,6 @@ app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
 app.config["UPLOAD_FOLDER"] = "static/uploads"
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
-
-CORS(app)
-
-db = SQLAlchemy(app)
 
 def allowed_file(filename):
 

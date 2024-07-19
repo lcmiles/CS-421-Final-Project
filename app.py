@@ -22,8 +22,13 @@ if LOCAL_TESTING == True:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:AIrA$V{q$7:80J77@34.42.182.194/cs-421-final-project-db'
-
+    db_user = 'root'
+    db_password = 'AIrA$V{q$7:80J77'
+    db_host = '34.42.182.194'
+    db_name = 'cs-421-final-project-db'
+    unix_socket_path = os.environ["INSTANCE_UNIX_SOCKET"]
+    app.config['SQLALCHEMY_DATABASE_URI'] = (f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}")
+    
 CORS(app)
 
 db = SQLAlchemy(app)

@@ -34,7 +34,6 @@ def allowed_file(filename):
    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def upload_to_gcs(file, bucket_name, folder):
-   """Uploads a file to the given bucket and folder."""
    credentials, project = google.auth.default()
    client = storage.Client(credentials=credentials, project=project)
    bucket = client.bucket(bucket_name)

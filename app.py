@@ -2,8 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 
 from flask_cors import CORS
 
-import sqlalchemy
-
 from models import *
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -24,31 +22,10 @@ if LOCAL_TESTING == True:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
 else:
-
-    def connect_unix_socket() -> sqlalchemy.engine.base.Engine:
-        # Note: Saving credentials in environment variables is convenient, but not
-        # secure - consider a more secure solution such as
-        # Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
-        # keep secrets safe.
-        db_user = os.environ["DB_USER"]  # e.g. 'my-database-user'
-        db_pass = os.environ["DB_PASS"]  # e.g. 'my-database-password'
-        db_name = os.environ["DB_NAME"]  # e.g. 'my-database'
-        unix_socket_path = os.environ["INSTANCE_UNIX_SOCKET"]  # e.g. '/cloudsql/project:region:instance'
-
-        pool = sqlalchemy.create_engine(
-            # Equivalent URL:
-            # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=<socket_path>/<cloud_sql_instance_name>
-            sqlalchemy.engine.url.URL.create(
-                drivername="mysql+pymysql",
-                username=db_user,
-                password=db_pass,
-                database=db_name,
-                query={"unix_socket": unix_socket_path},
-            ),
-        )
-        return pool
-
+    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:AIrA$V{q$7:80J77@34.42.182.194/cs-421-final-project-db"
+    
 CORS(app)
+
 
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 

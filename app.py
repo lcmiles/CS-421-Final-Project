@@ -6,20 +6,20 @@ from werkzeug.utils import secure_filename
 import pytz
 import secrets
 from google.cloud import storage
+import google.auth
+import os
 
 app = Flask(__name__)
+
 LOCAL_TESTING = False  # Set True if running locally
+
 if LOCAL_TESTING:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
     app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
     app.config["UPLOAD_FOLDER"] = "static/uploads"
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:AIrA$V{q$7:80J77@/cs-421-final-project-db?unix_socket=/cloudsql/cs-421-final-project:us-central1:cs-421-final-project-sql-instance"
-
-app.config["GCS_BUCKET"] = "cs-421-final-project-uploads"
-app.config["GCS_PROFILE_PICTURE_FOLDER"] = "static/profile_pics"
-app.config["GCS_UPLOAD_FOLDER"] = "static/uploads"
-app.config["GOOGLE_APPLICATION_CREDENTIALS"] = "cs-421-final-project-24cfffe5a3de.json"
+    app.config["GCS_BUCKET"] = "cs-421-final-project-uploads"
 
 CORS(app)
 db.init_app(app)
@@ -29,18 +29,24 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 storage_client = storage.Client()
 bucket = storage_client.bucket(app.config["GCS_BUCKET"])
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
+
 def allowed_file(filename):
    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-def upload_to_gcs(file, folder):
-   if file and allowed_file(file.filename):
-       filename = secure_filename(file.filename)
-       blob = bucket.blob(f"{folder}/{filename}")
-       blob.upload_from_file(file, content_type=file.content_type)
-       return f"{folder}/{filename}"
-   return None
+
+def upload_to_gcs(file, bucket_name, folder):
+   """Uploads a file to the given bucket and folder."""
+   credentials, project = google.auth.default()
+   client = storage.Client(credentials=credentials, project=project)
+   bucket = client.bucket(bucket_name)
+   blob = bucket.blob(f"{folder}/{file.filename}")
+   blob.upload_from_file(file)
+   blob.make_public()
+   return blob.public_url
+
 @app.errorhandler(500)
 def internal_error(error):
    return render_template('500.html', error=error), 500
+
 @app.route("/", methods=["GET", "POST"])
 def index():
    if "user_id" not in session:
@@ -55,19 +61,32 @@ def index():
        video = None
        if 'photo' in request.files:
            photo_file = request.files['photo']
-           photo = upload_to_gcs(photo_file, app.config["GCS_UPLOAD_FOLDER"])
+           if photo_file and allowed_file(photo_file.filename):
+               if LOCAL_TESTING:
+                   photo_filename = secure_filename(photo_file.filename)
+                   photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
+                   photo_file.save(photo_path)
+                   photo = f"uploads/{photo_filename}"
+               else:
+                   photo = upload_to_gcs(photo_file, app.config["GCS_BUCKET"], "uploads")
        if 'video' in request.files:
            video_file = request.files['video']
-           video = upload_to_gcs(video_file, app.config["GCS_UPLOAD_FOLDER"])
+           if video_file and allowed_file(video_file.filename):
+               if LOCAL_TESTING:
+                   video_filename = secure_filename(video_file.filename)
+                   video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+                   video_file.save(video_path)
+                   video = f"uploads/{video_filename}"
+               else:
+                   video = upload_to_gcs(video_file, app.config["GCS_BUCKET"], "uploads")
        create_post(user_id, post_content, photo, video)
    posts = get_posts()
-   notifs = get_follow_requests(
-user.id
-)
+   notifs = get_follow_requests(user.id)
    central = pytz.timezone("US/Central")
    for post in posts:
        post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
    return render_template("index.html", posts=posts, user=user, notifs=notifs)
+
 @app.route("/create_post", methods=["GET", "POST"])
 def create_post():
    if "user_id" not in session:
@@ -86,6 +105,7 @@ def create_post():
        create_post_db(user_id, post_content, photo, video)
        return redirect(url_for("index"))
    return render_template("create_post.html")
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
    if request.method == "POST":
@@ -109,12 +129,14 @@ def register():
        session["profile_picture"] = new_user.profile_picture
        return redirect(url_for("thankyou"))
    return render_template("register.html")
+
 @app.route("/thankyou", methods=["GET", "POST"])
 def thankyou():
    if "user_id" not in session:
        return redirect(url_for("login"))
    get_flashed_messages()
    return render_template("thankyou.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
    if request.method == "POST":
@@ -133,21 +155,21 @@ def login():
        else:
            flash("Unrecognized email. Please try again.", "error")
    return render_template("login.html")
+
 @app.route("/logout", methods=["POST"])
 def logout():
    session.pop("user_id", None)
    session.pop("username", None)
    session.pop("profile_picture", None)
    return redirect(url_for("login"))
+
 @app.route("/profile/<username>", methods=["GET"])
 def view_profile(username):
    user = get_user_by_username(username)
    if not user:
        return "User not found", 404
    notifs = get_follow_requests(session["user_id"])
-   user_posts = get_posts(user_id=
-user.id
-)
+   user_posts = get_posts(user_id=user.id)
    central = pytz.timezone("US/Central")
    for post in user_posts:
        post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
@@ -159,6 +181,7 @@ user.id
        notifs=notifs,
        posts=user_posts
    )
+
 @app.route("/edit_profile", methods=["GET", "POST"])
 def edit_profile():
    if "user_id" not in session:
@@ -168,14 +191,21 @@ def edit_profile():
        bio = request.form.get("bio")
        profile_picture = request.files["profile_picture"]
        if profile_picture and allowed_file(profile_picture.filename):
-           filename = upload_to_gcs(profile_picture, app.config["GCS_PROFILE_PICTURE_FOLDER"])
-           user.profile_picture = filename
+           file_extension = profile_picture.filename.rsplit(".", 1)[1].lower()
+           filename = f"{user.username}.{file_extension}"
+           if LOCAL_TESTING:
+               profile_picture_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], filename)
+               profile_picture.save(profile_picture_path)
+               user.profile_picture = f"profile_pics/{filename}"
+           else:
+               user.profile_picture = upload_to_gcs(profile_picture, app.config["GCS_BUCKET"], "profile_pics")
        user.bio = bio
        db.session.commit()
        session["profile_picture"] = user.profile_picture
        return redirect(url_for("view_profile", username=user.username))
    notifs = get_follow_requests(session["user_id"])
    return render_template("edit_profile.html", user=user, notifs=notifs)
+
 @app.route("/follow", methods=["POST"])
 def follow():
    if "user_id" not in session:
@@ -217,6 +247,7 @@ def post_page(post_id):
    central = pytz.timezone("US/Central")
    post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
    return render_template("post_page.html", post=post, comments=comments, user=user, likes=likes)
+
 @app.route("/like/<post_id>", methods=['GET','POST'])
 def server_like(post_id):
     
@@ -231,6 +262,7 @@ def server_like(post_id):
         like_post(post_id,user_id)
     
     return redirect(url_for("post_page",post_id=post_id))
+
 @app.route('/search', methods=['GET'])
 def search_users():
    query = request.args.get('query')

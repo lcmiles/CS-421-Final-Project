@@ -22,7 +22,7 @@ if LOCAL_TESTING == True:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://cs-421-final-project-sql-user:AIrA$V{q$7:80J77@34.42.182.194/cs-421-final-project-db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:AIrA$V{q$7:80J77@/cs-421-final-project-db?unix_socket=/cloudsql/cs-421-final-project:us-central1:cs-421-final-project-sql-instance"
     
 CORS(app)
 

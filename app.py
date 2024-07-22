@@ -20,9 +20,13 @@ LOCAL_TESTING = False #set True if running locally
 
 if LOCAL_TESTING == True:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+    app.config["UPLOAD_FOLDER"] = "static/uploads"
+    app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
 
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:AIrA$V{q$7:80J77@/cs-421-final-project-db?unix_socket=/cloudsql/cs-421-final-project:us-central1:cs-421-final-project-sql-instance"
+    app.config["UPLOAD_FOLDER"] = "cs-421-final-project-uploads/static/uploads"
+    app.config["UPLOAD_FOLDER"] = "cs-421-final-project-uploads/static/profile_pics"
     
 CORS(app)
 
@@ -31,10 +35,6 @@ db.init_app(app)
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
-
-app.config["UPLOAD_FOLDER"] = "static/uploads"
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
 

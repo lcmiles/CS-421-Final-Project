@@ -19,7 +19,7 @@ class User(db.Model):
     bio = db.Column(db.Text)
 
     profile_picture = db.Column(
-        db.String(20), nullable=False, default="profile_pics/default.png"
+        db.String(100), nullable=False, default="profile_pics/default.png"
     )
 
     followers: Mapped[List["Follow"]] = db.relationship(

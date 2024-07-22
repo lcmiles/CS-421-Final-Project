@@ -1,170 +1,110 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, get_flashed_messages
-
 from flask_cors import CORS
-
 from models import *
-
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from werkzeug.utils import secure_filename
-
-import os
-
 import pytz
-
 import secrets
+from google.cloud import storage
+import google.auth
+import os
 
 app = Flask(__name__)
 
-LOCAL_TESTING = False #set True if running locally
+LOCAL_TESTING = False  # Set True if running locally
 
-if LOCAL_TESTING == True:
+if LOCAL_TESTING:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-    app.config["UPLOAD_FOLDER"] = "static/uploads"
     app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
-
+    app.config["UPLOAD_FOLDER"] = "static/uploads"
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:AIrA$V{q$7:80J77@/cs-421-final-project-db?unix_socket=/cloudsql/cs-421-final-project:us-central1:cs-421-final-project-sql-instance"
-    app.config["UPLOAD_FOLDER"] = "cs-421-final-project-uploads/static/uploads"
-    app.config["UPLOAD_FOLDER"] = "cs-421-final-project-uploads/static/profile_pics"
-    
+    app.config["GCS_BUCKET"] = "cs-421-final-project-uploads"
+
 CORS(app)
-
 db.init_app(app)
-
 app.config["SECRET_KEY"] = secrets.token_hex(16)
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+storage_client = storage.Client()
+bucket = storage_client.bucket(app.config["GCS_BUCKET"])
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
 
 def allowed_file(filename):
+   return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+def upload_to_gcs(file, bucket_name, folder):
+   """Uploads a file to the given bucket and folder."""
+   credentials, project = google.auth.default()
+   client = storage.Client(credentials=credentials, project=project)
+   bucket = client.bucket(bucket_name)
+   blob = bucket.blob(f"{folder}/{file.filename}")
+   blob.upload_from_file(file)
+   blob.make_public()
+   return blob.public_url
 
 @app.errorhandler(500)
-
 def internal_error(error):
-
-    return render_template('500.html', error=error), 500
+   return render_template('500.html', error=error), 500
 
 @app.route("/", methods=["GET", "POST"])
-
 def index():
-
-    if "user_id" not in session:
-
-        return redirect(url_for("login"))
-    
-    if not User.query.first():
-        
-        return redirect(url_for("login"))
-
-    user = get_user_by_id(session["user_id"])
-
-    if request.method == "POST":
-
-        user_id = session["user_id"]
-
-        post_content = request.form.get("post")
-
-        photo = None
-
-        video = None
-
-        if 'photo' in request.files:
-
-            photo_file = request.files['photo']
-
-            if photo_file and allowed_file(photo_file.filename):
-
-                photo_filename = secure_filename(photo_file.filename)
-
-                photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
-
-                photo_file.save(photo_path)
-
-                photo = f"uploads/{photo_filename}"
-
-        if 'video' in request.files:
-
-            video_file = request.files['video']
-
-            if video_file and allowed_file(video_file.filename):
-
-                video_filename = secure_filename(video_file.filename)
-
-                video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
-
-                video_file.save(video_path)
-
-                video = f"uploads/{video_filename}"
-
-        create_post(user_id, post_content, photo, video)
-
-    posts = get_posts()
-    
-    notifs = get_follow_requests(user.id)
-
-    central = pytz.timezone("US/Central")
-
-    for post in posts:
-
-        post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
-
-    return render_template("index.html", posts=posts, user=user, notifs=notifs)
+   if "user_id" not in session:
+       return redirect(url_for("login"))
+   if not User.query.first():
+       return redirect(url_for("login"))
+   user = get_user_by_id(session["user_id"])
+   if request.method == "POST":
+       user_id = session["user_id"]
+       post_content = request.form.get("post")
+       photo = None
+       video = None
+       if 'photo' in request.files:
+           photo_file = request.files['photo']
+           if photo_file and allowed_file(photo_file.filename):
+               if LOCAL_TESTING:
+                   photo_filename = secure_filename(photo_file.filename)
+                   photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
+                   photo_file.save(photo_path)
+                   photo = f"uploads/{photo_filename}"
+               else:
+                   photo = upload_to_gcs(photo_file, app.config["GCS_BUCKET"], "uploads")
+       if 'video' in request.files:
+           video_file = request.files['video']
+           if video_file and allowed_file(video_file.filename):
+               if LOCAL_TESTING:
+                   video_filename = secure_filename(video_file.filename)
+                   video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+                   video_file.save(video_path)
+                   video = f"uploads/{video_filename}"
+               else:
+                   video = upload_to_gcs(video_file, app.config["GCS_BUCKET"], "uploads")
+       create_post(user_id, post_content, photo, video)
+   posts = get_posts()
+   notifs = get_follow_requests(user.id)
+   central = pytz.timezone("US/Central")
+   for post in posts:
+       post.timestamp = post.timestamp.replace(tzinfo=pytz.utc).astimezone(central)
+   return render_template("index.html", posts=posts, user=user, notifs=notifs)
 
 @app.route("/create_post", methods=["GET", "POST"])
-
 def create_post():
-
-    if "user_id" not in session:
-
-        return redirect(url_for("login"))
-
-    if request.method == "POST":
-
-        user_id = session["user_id"]
-
-        post_content = request.form.get("post")
-
-        photo = None
-
-        video = None
-
-        if 'photo' in request.files:
-
-            photo_file = request.files['photo']
-
-            if photo_file and allowed_file(photo_file.filename):
-
-                photo_filename = secure_filename(photo_file.filename)
-
-                photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
-
-                photo_file.save(photo_path)
-
-                photo = f"uploads/{photo_filename}"
-
-        if 'video' in request.files:
-
-            video_file = request.files['video']
-
-            if video_file and allowed_file(video_file.filename):
-
-                video_filename = secure_filename(video_file.filename)
-
-                video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
-
-                video_file.save(video_path)
-
-                video = f"uploads/{video_filename}"
-
-        create_post_db(user_id, post_content, photo, video)
-
-        return redirect(url_for("index"))
-
-    return render_template("create_post.html")
+   if "user_id" not in session:
+       return redirect(url_for("login"))
+   if request.method == "POST":
+       user_id = session["user_id"]
+       post_content = request.form.get("post")
+       photo = None
+       video = None
+       if 'photo' in request.files:
+           photo_file = request.files['photo']
+           photo = upload_to_gcs(photo_file, app.config["GCS_UPLOAD_FOLDER"])
+       if 'video' in request.files:
+           video_file = request.files['video']
+           video = upload_to_gcs(video_file, app.config["GCS_UPLOAD_FOLDER"])
+       create_post_db(user_id, post_content, photo, video)
+       return redirect(url_for("index"))
+   return render_template("create_post.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -193,7 +133,7 @@ def register():
 @app.route("/thankyou", methods=["GET", "POST"])
 def thankyou():
    if "user_id" not in session:
-        return redirect(url_for("login"))
+       return redirect(url_for("login"))
    get_flashed_messages()
    return render_template("thankyou.html")
 
@@ -217,16 +157,11 @@ def login():
    return render_template("login.html")
 
 @app.route("/logout", methods=["POST"])
-
 def logout():
-
-    session.pop("user_id", None)
-
-    session.pop("username", None)
-
-    session.pop("profile_picture", None)
-
-    return redirect(url_for("login"))
+   session.pop("user_id", None)
+   session.pop("username", None)
+   session.pop("profile_picture", None)
+   return redirect(url_for("login"))
 
 @app.route("/profile/<username>", methods=["GET"])
 def view_profile(username):
@@ -248,93 +183,52 @@ def view_profile(username):
    )
 
 @app.route("/edit_profile", methods=["GET", "POST"])
-
 def edit_profile():
-
-    if "user_id" not in session:
-
-        return redirect(url_for("login"))
-
-    user = get_user_by_id(session["user_id"])
-
-    if request.method == "POST":
-
-        bio = request.form.get("bio")
-
-        profile_picture = request.files["profile_picture"]
-
-        if profile_picture and allowed_file(profile_picture.filename):
-
-            file_extension = profile_picture.filename.rsplit(".", 1)[1].lower()
-
-            filename = f"{user.username}.{file_extension}"
-
-            profile_picture_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], filename)
-            profile_picture.save(profile_picture_path)
-
-            user.profile_picture = f"profile_pics/{filename}"
-
-        user.bio = bio
-
-        db.session.commit()
-
-        session["profile_picture"] = user.profile_picture
-
-        return redirect(url_for("view_profile", username=user.username))
-
-    notifs = get_follow_requests(session["user_id"])
-
-    return render_template("edit_profile.html", user=user, notifs=notifs)
+   if "user_id" not in session:
+       return redirect(url_for("login"))
+   user = get_user_by_id(session["user_id"])
+   if request.method == "POST":
+       bio = request.form.get("bio")
+       profile_picture = request.files["profile_picture"]
+       if profile_picture and allowed_file(profile_picture.filename):
+           file_extension = profile_picture.filename.rsplit(".", 1)[1].lower()
+           filename = f"{user.username}.{file_extension}"
+           if LOCAL_TESTING:
+               profile_picture_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], filename)
+               profile_picture.save(profile_picture_path)
+               user.profile_picture = f"profile_pics/{filename}"
+           else:
+               user.profile_picture = upload_to_gcs(profile_picture, app.config["GCS_BUCKET"], "profile_pics")
+       user.bio = bio
+       db.session.commit()
+       session["profile_picture"] = user.profile_picture
+       return redirect(url_for("view_profile", username=user.username))
+   notifs = get_follow_requests(session["user_id"])
+   return render_template("edit_profile.html", user=user, notifs=notifs)
 
 @app.route("/follow", methods=["POST"])
-
 def follow():
-
-    if "user_id" not in session:
-
-        return redirect(url_for("login"))
-
-    user = get_user_by_id(session["user_id"])
-
-    followed_id = request.args.get("user")
-
-    followed_user = get_user_by_id(followed_id)
-
-    if not followed_user or not user:
-
-        return "User not found", 404
-
-    action = request.args.get("action")
-
-    if action == "request":
-
-        toggle_follow(user.id, followed_id)
-
-        flash("Follow request has been sent.", "success")
-
-    elif action == "unfollow":
-
-        toggle_follow(user.id, followed_id)
-
-        flash("User has been unfollowed.", "success")
-
-    elif action == "approve":
-
-        approve_follow_request(followed_id, user.id)
-
-        flash("Follow request has been approved.", "success")
-
-    elif action == "decline":
-
-        decline_follow_request(followed_id, user.id)
-
-        flash("Follow request has been rejected.", "success")
-
-    else:
-
-        return "Invalid action", 400
-
-    return redirect(url_for("view_profile", username=followed_user.username))
+   if "user_id" not in session:
+       return redirect(url_for("login"))
+   user = get_user_by_id(session["user_id"])
+   followed_id = request.args.get("user")
+   followed_user = get_user_by_id(followed_id)
+   if not followed_user or not user:
+       return "User not found", 404
+   action = request.args.get("action")
+   if action == "request":
+       toggle_follow(user.id, followed_id)
+       flash("Follow request has been sent.", "success")
+   elif action == "unfollow":
+       toggle_follow(user.id, followed_id)
+       flash("User has been unfollowed.", "success")
+   elif action == "approve":
+       approve_follow_request(followed_id,user.id)
+       flash("Follow request has been approved.", "success")
+   elif action == "decline":
+       decline_follow_request(followed_id, user.id)
+       flash("Follow request has been declined.", "success")
+   return redirect(url_for("view_profile", username=followed_user.username))
 
 @app.route("/post/<post_id>", methods=['GET','POST'])
 def post_page(post_id):
@@ -355,13 +249,10 @@ def post_page(post_id):
    return render_template("post_page.html", post=post, comments=comments, user=user, likes=likes)
 
 @app.route("/like/<post_id>", methods=['GET','POST'])
-
 def server_like(post_id):
     
     if "user_id" not in session:
-
         return redirect(url_for("login"))
-
     user= get_user_by_id(session["user_id"])
     
     if request.method == "POST":
@@ -383,5 +274,4 @@ def search_users():
    return render_template('search.html', users=users, query=query)
 
 if __name__ == "__main__":
-
-    app.run(debug=True, host="0.0.0.0", port=8080)
+   app.run(debug=True)

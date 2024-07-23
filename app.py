@@ -11,7 +11,7 @@ import os
 
 app = Flask(__name__)
 
-LOCAL_TESTING = False  # Set True if running locally
+LOCAL_TESTING = True  # Set True if running locally
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:
@@ -45,6 +45,10 @@ def upload_to_gcs(file, bucket_name, folder):
 @app.errorhandler(500)
 def internal_error(error):
    return render_template('500.html', error=error), 500
+
+@app.errorhandler(404)
+def internal_error(error):
+   return render_template('404.html', error=error), 404
 
 @app.route("/", methods=["GET", "POST"])
 def index():

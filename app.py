@@ -12,14 +12,15 @@ import os
 app = Flask(__name__)
 
 LOCAL_TESTING = False  # Set True if running locally
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-    app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
-    app.config["UPLOAD_FOLDER"] = "static/uploads"
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:AIrA$V{q$7:80J77@/cs-421-final-project-db?unix_socket=/cloudsql/cs-421-final-project:us-central1:cs-421-final-project-sql-instance"
-    app.config["GCS_BUCKET"] = "cs-421-final-project-uploads"
+    
+app.config["GCS_BUCKET"] = "cs-421-final-project-uploads"
+app.config["PROFILE_UPLOAD_FOLDER"] = "cs-421-final-project-uploads/static/uploads"
 
 CORS(app)
 db.init_app(app)
@@ -39,7 +40,6 @@ def upload_to_gcs(file, bucket_name, folder):
    bucket = client.bucket(bucket_name)
    blob = bucket.blob(f"{folder}/{file.filename}")
    blob.upload_from_file(file)
-   blob.make_public()
    return blob.public_url
 
 @app.errorhandler(500)
@@ -97,13 +97,26 @@ def create_post():
        video = None
        if 'photo' in request.files:
            photo_file = request.files['photo']
-           photo = upload_to_gcs(photo_file, app.config["GCS_UPLOAD_FOLDER"])
+           if photo_file:
+               photo = upload_to_gcs(photo_file, app.config["GCS_BUCKET"], "uploads")
        if 'video' in request.files:
            video_file = request.files['video']
-           video = upload_to_gcs(video_file, app.config["GCS_UPLOAD_FOLDER"])
+           if video_file:
+               video = upload_to_gcs(video_file, app.config["GCS_BUCKET"], "uploads")
        create_post_db(user_id, post_content, photo, video)
        return redirect(url_for("index"))
    return render_template("create_post.html")
+
+def create_post_db(user_id, post_content, photo, video):
+   new_post = Post(
+       user_id=user_id,
+       content=post_content,
+       photo=photo,
+       video=video,
+       timestamp=datetime.utcnow()
+   )
+   db.session.add(new_post)
+   db.session.commit()
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -184,20 +197,13 @@ def view_profile(username):
 @app.route("/edit_profile", methods=["GET", "POST"])
 def edit_profile():
    if "user_id" not in session:
-       return redirect(url_for("login"))
+        return redirect(url_for("login"))
    user = get_user_by_id(session["user_id"])
    if request.method == "POST":
        bio = request.form.get("bio")
        profile_picture = request.files["profile_picture"]
        if profile_picture and allowed_file(profile_picture.filename):
-           file_extension = profile_picture.filename.rsplit(".", 1)[1].lower()
-           filename = f"{user.username}.{file_extension}"
-           if LOCAL_TESTING:
-               profile_picture_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], filename)
-               profile_picture.save(profile_picture_path)
-               user.profile_picture = f"profile_pics/{filename}"
-           else:
-               user.profile_picture = upload_to_gcs(profile_picture, app.config["GCS_BUCKET"], "profile_pics")
+        user.profile_picture = upload_to_gcs(profile_picture, app.config["GCS_BUCKET"], "profile_pics")
        user.bio = bio
        db.session.commit()
        session["profile_picture"] = user.profile_picture

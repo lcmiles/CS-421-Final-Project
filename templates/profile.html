@@ -38,7 +38,7 @@
 
             {% if user.profile_picture %}
 
-                <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Profile Picture"
+                <img src="{{ user.profile_picture }}" alt="Profile Picture"
 
                     class="profile-picture-profile-box" />
 
@@ -96,7 +96,7 @@
 
                                 <li>
 
-                                    <img src="{{ url_for('static', filename=follow.follower.profile_picture) }}"
+                                    <img src="{{ follow.follower.profile_picture }}"
 
                                         alt="Profile Picture" class="post-profile-picture">
 
@@ -122,7 +122,7 @@
 
                                 <li>
 
-                                    <img src="{{ url_for('static', filename=follow.followed.profile_picture) }}"
+                                    <img src="{{ follow.followed.profile_picture }}"
 
                                         alt="Profile Picture" class="post-profile-picture">
 
@@ -178,7 +178,7 @@
 
                                     {% if post.user.profile_picture %}
 
-                                        <img src="{{ url_for('static', filename=post.user.profile_picture) }}"
+                                        <img src="{{ post.user.profile_picture }}"
 
                                             alt="Profile Picture" class="post-profile-picture">
 
@@ -206,7 +206,7 @@
 
                                     <div class="post-photo">
 
-                                        <img src="{{ url_for('static', filename=post.photo) }}" alt="Post Photo">
+                                        <img src="{{ post.photo }}" alt="Post Photo">
 
                                     </div>
 
@@ -218,7 +218,7 @@
 
                                         <video controls>
 
-                                            <source src="{{ url_for('static', filename=post.video) }}" type="video/mp4">
+                                            <source src="{{ post.video }}" type="video/mp4">
 
                                         </video>
 

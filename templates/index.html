@@ -18,7 +18,7 @@
 
         {% for post in posts %}
 
-            <div onclick="location.href='{{ url_for('post_page',post_id=post.id)}}';" class="post">
+            <div onclick="location.href='{{ url_for('post_page', post_id=post.id) }}';" class="post">
 
                 <div class="post-box">
 
@@ -26,7 +26,7 @@
 
                         {% if post.user.profile_picture %}
 
-                        <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+                        <img src="{{ post.user.profile_picture }}" alt="Profile Picture" class="post-profile-picture">
 
                         {% else %}
 
@@ -34,7 +34,11 @@
 
                         {% endif %}
 
-                        <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
+                        <span class="username-container">
+
+                            <a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a>
+
+                        </span>
 
                         <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
 
@@ -46,7 +50,7 @@
 
                     <div class="post-photo">
 
-                        <img src="{{ url_for('static', filename=post.photo) }}" alt="Post Photo">
+                        <img src="{{ post.photo }}" alt="Post Photo">
 
                     </div>
 
@@ -58,7 +62,7 @@
 
                         <video controls>
 
-                            <source src="{{ url_for('static', filename=post.video) }}" type="video/mp4">
+                            <source src="{{ post.video }}" type="video/mp4">
 
                         </video>
 
@@ -98,5 +102,4 @@
 
 </body>
 
-</html>
- 
+</html> 

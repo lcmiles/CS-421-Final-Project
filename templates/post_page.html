@@ -16,7 +16,7 @@
 
                     {% if post.user.profile_picture %}
 
-                    <img src="{{ url_for('static', filename=post.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+                    <img src="{{ post.user.profile_picture }}" alt="Profile Picture" class="post-profile-picture">
 
                     {% else %}
 
@@ -36,7 +36,7 @@
 
                 <div class="post-photo">
 
-                    <img src="{{ url_for('static', filename=post.photo) }}" alt="Post Photo">
+                    <img src="{{ post.photo }}" alt="Post Photo">
 
                 </div>
 
@@ -48,7 +48,7 @@
 
                     <video controls>
 
-                        <source src="{{ url_for('static', filename=post.video) }}" type="video/mp4">
+                        <source src="{{ post.video }}" type="video/mp4">
 
                     </video>
 
@@ -66,7 +66,7 @@
             <div class="comment-box">
                 <div class="comment-header">
                     {% if comment.user.profile_picture %}
-                    <img src="{{ url_for('static', filename=comment.user.profile_picture) }}" alt="Profile Picture" class="post-profile-picture">
+                    <img src="{{ comment.user.profile_picture }}" alt="Profile Picture" class="post-profile-picture">
                     {% else %}
                     <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
                     {% endif %}

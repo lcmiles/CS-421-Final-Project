@@ -16,8 +16,6 @@
 
         <div class="dropdown">
 
-            {% if session['profile_picture'] %}
-
             <img
 
                 src="{{ session['profile_picture'] }}"
@@ -27,20 +25,6 @@
                 class="profile-picture"
 
             />
-
-            {% else %}
-
-            <img
-
-                src="{{ url_for('static', filename='default.png') }}"
-
-                alt="Default Profile Picture"
-
-                class="profile-picture"
-
-            />
-
-            {% endif %}
 
             <button class="dropbtn">{{ session['username'] }} &#9662;</button>
 

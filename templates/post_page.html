@@ -14,15 +14,7 @@
 
                 <div class="post-header">
 
-                    {% if post.user.profile_picture %}
-
                     <img src="{{ post.user.profile_picture }}" alt="Profile Picture" class="post-profile-picture">
-
-                    {% else %}
-
-                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture" class="post-profile-picture">
-
-                    {% endif %}
 
                     <span class="username-container"><a style="color:dodgerblue" href="{{ url_for('view_profile', username=post.user.username) }}" class="username">{{ post.user.username }}</a></span>
 

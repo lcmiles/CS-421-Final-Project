@@ -11,7 +11,7 @@ import os
 
 app = Flask(__name__)
 
-LOCAL_TESTING = False  # Set True if running locally
+LOCAL_TESTING = True  # Set True if running locally
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:

@@ -12,23 +12,21 @@ db = SQLAlchemy()
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    bio = db.Column(db.Text)
-
-    profile_picture = db.Column(
-        db.String(100), nullable=False, default="https://storage.googleapis.com/cs-421-final-project-uploads/profile_pics/default.png"
-    )
-
-    followers: Mapped[List["Follow"]] = db.relationship(
-        primaryjoin="and_(User.id==Follow.followed_id, Follow.approved==1)"
-    )
-
-    following: Mapped[List["Follow"]] = db.relationship(
-        primaryjoin="and_(User.id==Follow.follower_id, Follow.approved==1)"
-    )
+   id = db.Column(db.Integer, primary_key=True)
+   username = db.Column(db.String(50), unique=True, nullable=False)
+   email = db.Column(db.String(120), unique=True, nullable=False)
+   password = db.Column(db.String(255), nullable=False)
+   bio = db.Column(db.Text)
+   profile_picture = db.Column(
+       db.String(100), nullable=False, default="https://storage.googleapis.com/cs-421-final-project-uploads/profile_pics/default.png"
+   )
+   is_private = db.Column(db.Boolean, default=False)
+   followers: Mapped[List["Follow"]] = db.relationship(
+       primaryjoin="and_(User.id==Follow.followed_id, Follow.approved==1)"
+   )
+   following: Mapped[List["Follow"]] = db.relationship(
+       primaryjoin="and_(User.id==Follow.follower_id, Follow.approved==1)"
+   )
 
 
 class Post(db.Model):
@@ -105,11 +103,16 @@ def create_post_db(user_id, post_content, photo=None, video=None):
 
     db.session.commit()
 
-def get_posts(user_id=None):
+def get_posts(user_id=None, current_user_id=None):
    if user_id:
        return Post.query.filter_by(user_id=user_id).order_by(desc(Post.timestamp)).all()
    else:
-       return Post.query.order_by(desc(Post.timestamp)).all()
+       if current_user_id:
+           following_ids = [followed.followed_id for followed in Follow.query.filter_by(follower_id=current_user_id, approved=1).all()]
+           return Post.query.filter(
+               (Post.user_id.in_(following_ids)) | (Post.user_id == current_user_id) | (Post.user.has(User.is_private == False))
+           ).order_by(desc(Post.timestamp)).all()
+       return Post.query.filter(Post.user.has(User.is_private == False)).order_by(desc(Post.timestamp)).all()
  
 
 def get_post_by_id(post_id):

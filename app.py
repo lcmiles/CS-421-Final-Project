@@ -11,7 +11,7 @@ import os
 
 app = Flask(__name__)
 
-LOCAL_TESTING = False  # Set True if running locally
+LOCAL_TESTING = True  # Set True if running locally
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:
@@ -82,8 +82,8 @@ def index():
                    video = f"uploads/{video_filename}"
                else:
                    video = upload_to_gcs(video_file, app.config["GCS_BUCKET"], "uploads")
-       create_post(user_id, post_content, photo, video)
-   posts = get_posts()
+       create_post_db(user_id, post_content, photo, video)
+   posts = get_posts(current_user_id=session["user_id"])
    notifs = get_follow_requests(user.id)
    central = pytz.timezone("US/Central")
    for post in posts:
@@ -201,14 +201,16 @@ def view_profile(username):
 @app.route("/edit_profile", methods=["GET", "POST"])
 def edit_profile():
    if "user_id" not in session:
-        return redirect(url_for("login"))
+       return redirect(url_for("login"))
    user = get_user_by_id(session["user_id"])
    if request.method == "POST":
        bio = request.form.get("bio")
        profile_picture = request.files["profile_picture"]
+       is_private = request.form.get("is_private") == 'on'
        if profile_picture and allowed_file(profile_picture.filename):
-        user.profile_picture = upload_to_gcs(profile_picture, app.config["GCS_BUCKET"], "profile_pics")
+           user.profile_picture = upload_to_gcs(profile_picture, app.config["GCS_BUCKET"], "profile_pics")
        user.bio = bio
+       user.is_private = is_private
        db.session.commit()
        session["profile_picture"] = user.profile_picture
        return redirect(url_for("view_profile", username=user.username))
@@ -284,6 +286,5 @@ def search_users():
 
 if __name__ == "__main__":
     with app.app_context():
-
         db.create_all()
     app.run(debug=True, host="0.0.0.0", port=8080)

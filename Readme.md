@@ -1,6 +1,6 @@
 # CS-429 Final Project
 
-## Project Members: Logan Miles, Abhi Bedi, Faris, Nicholas Fason, Taylor Shirah
+## Project Members: Logan Miles, Abhi Bedi, Faris Khan, Nicholas Fason, Taylor Shirah
 
 ### Project Description:
 The goal of this project is to develop a social media web application using the Flask framework, a SQL database, HTML, and CSS.

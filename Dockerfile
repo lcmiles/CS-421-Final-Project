@@ -1,5 +1,7 @@
 FROM python:3.11
 
+ENV LOCAL_TESTING=False
+
 # Set the working directory
 WORKDIR /app
 

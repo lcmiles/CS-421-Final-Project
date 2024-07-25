@@ -8,6 +8,7 @@ import secrets
 from google.cloud import storage
 import google.auth
 import os
+import traceback
 
 app = Flask(__name__)
 
@@ -41,14 +42,6 @@ def upload_to_gcs(file, bucket_name, folder):
    blob = bucket.blob(f"{folder}/{file.filename}")
    blob.upload_from_file(file)
    return blob.public_url
-
-@app.errorhandler(500)
-def internal_error(error):
-   return render_template('500.html', error=error), 500
-
-@app.errorhandler(404)
-def internal_error(error):
-   return render_template('404.html', error=error), 404
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -284,9 +277,18 @@ def search_users():
        users = User.query.filter(User.username.contains(query)).all()
    return render_template('search.html', users=users, query=query)
 
+@app.errorhandler(500)
+def internal_error(error):
+   tb=traceback.format_exc()
+   return render_template('500.html', error=error, traceback=tb), 500
+
+@app.errorhandler(404)
+def internal_error(error):
+   return render_template('404.html', error=error), 404
+
 if __name__ == "__main__":
     # uncomment line to rebuild cloud sql db with next deployment
     # with app.app_context():
     #     db.drop_all()
     #     db.create_all()
-    app.run(debug=True, host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080)

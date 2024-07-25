@@ -12,7 +12,7 @@ import traceback
 
 app = Flask(__name__)
 
-LOCAL_TESTING = os.getenv('LOCAL_TESTING','True')
+LOCAL_TESTING = False  # Set True if running locally
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:

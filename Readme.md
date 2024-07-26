@@ -20,7 +20,7 @@ The goal of this project was to develop a full-stack web application for softwar
 1. Create a Python virtual environment or download and install [Conda](https://www.anaconda.com/download) and then select it as your interpreter within your IDE.
 2. Clone the Git repository. Make sure that the folder you clone the repo into is accessible by the Conda interpreter or the virtual environment.
 3. Run the following command to download and install the required Python libraries: `pip install -r requirements.txt`
-4. Change `LOCAL_VARIABLE` to `True` at line 15 of app.py.
+4. Change `LOCAL_TESTING` variable to `True` at line 15 of app.py.
 5. Run the app.py file to start the flask app: `python app.py`
 6. The Flask app should begin running on your machine and you can access it at `https://localhost:8080` or the ip address provided in the terminal when the app is started.
 

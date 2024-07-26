@@ -3,7 +3,7 @@
 ## Project Members: Logan Miles, Abhi Bedi, Faris Khan, Nicholas Fason, Taylor Shirah
 
 ### Project Description:
-The goal of this project was to develop a full-stack web application for software developers and computer scientists. The project required front end and back end development. For our web application we utilized the flask HTML and CSS to build the user interface, the flask framework to handling routing requests and interacting with the database, a SQL database to store the user data, and Google Cloud Platform resources to host the web application and its associated data.
+The goal of this project was to develop a full-stack web application for software developers and computer scientists. The project required front end and back end development. For our web application we utilized HTML and CSS to build the user interface, the flask framework to handle routing requests and interactions with the database, a SQL database to store the user data, and various Google Cloud Platform resources to host the web application and its associated data.
 
 ### Features:
 * User account registration/sign in

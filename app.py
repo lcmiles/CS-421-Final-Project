@@ -21,7 +21,7 @@ import traceback
 
 app = Flask(__name__)
 
-LOCAL_TESTING = True  # Set True if running locally
+LOCAL_TESTING = False  # Set True if running locally
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:
@@ -83,6 +83,8 @@ def index():
                     photo = upload_to_gcs(
                         photo_file, app.config["GCS_BUCKET"], "uploads"
                     )
+            else:
+                flash("Unsupported photo file type.", "error")
         if "video" in request.files:
             video_file = request.files["video"]
             if video_file and allowed_file(video_file.filename):
@@ -97,6 +99,8 @@ def index():
                     video = upload_to_gcs(
                         video_file, app.config["GCS_BUCKET"], "uploads"
                     )
+            else:
+                flash("Unsupported video file type.", "error")
         create_post_db(user_id, post_content, photo, video)
     posts = get_posts(current_user_id=session["user_id"])
     notifs = get_follow_requests(user.id)
@@ -117,12 +121,18 @@ def create_post():
         video = None
         if "photo" in request.files:
             photo_file = request.files["photo"]
-            if photo_file:
+            if photo_file and allowed_file(photo_file.filename):
                 photo = upload_to_gcs(photo_file, app.config["GCS_BUCKET"], "uploads")
+            else:
+                flash("Unsupported photo file type.", "error")
+                return render_template("create_post.html")
         if "video" in request.files:
             video_file = request.files["video"]
-            if video_file:
+            if video_file and allowed_file(video_file.filename):
                 video = upload_to_gcs(video_file, app.config["GCS_BUCKET"], "uploads")
+            else:
+                flash("Unsupported video file type.", "error")
+                return render_template("create_post.html")
         create_post_db(user_id, post_content, photo, video)
         return redirect(url_for("index"))
     return render_template("create_post.html")
@@ -232,16 +242,21 @@ def edit_profile():
     user = get_user_by_id(session["user_id"])
     if request.method == "POST":
         bio = request.form.get("bio")
-        profile_picture = request.files["profile_picture"]
+        profile_picture = request.files.get("profile_picture")
         is_private = request.form.get("is_private") == "on"
-        if profile_picture and allowed_file(profile_picture.filename):
-            user.profile_picture = upload_to_gcs(
-                profile_picture, app.config["GCS_BUCKET"], "profile_pics"
-            )
+        if profile_picture:
+            if allowed_file(profile_picture.filename):
+                user.profile_picture = upload_to_gcs(
+                    profile_picture, app.config["GCS_BUCKET"], "profile_pics"
+                )
+                session["profile_picture"] = user.profile_picture
+            else:
+                flash("Unsupported profile picture file type.", "error")
+                notifs = get_follow_requests(session["user_id"])
+                return render_template("edit_profile.html", user=user, notifs=notifs)
         user.bio = bio
         user.is_private = is_private
         db.session.commit()
-        session["profile_picture"] = user.profile_picture
         return redirect(url_for("view_profile", username=user.username))
     notifs = get_follow_requests(session["user_id"])
     return render_template("edit_profile.html", user=user, notifs=notifs)

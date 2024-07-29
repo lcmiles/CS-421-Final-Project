@@ -569,6 +569,9 @@ label {
     color: #721c24;
     width: 118%;
 }
+.container .flashes li.error {
+    margin-top: 15px;
+}
 .auth-container .flashes li.success {
     background-color: #d4edda;
     color: #155724;

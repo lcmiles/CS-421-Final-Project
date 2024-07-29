@@ -1,36 +1,22 @@
 <!DOCTYPE html>
-
 <html>
 
-<head>
+    <head>
+        <title>Create Post</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    </head>
 
-    <title>Create Post</title>
-
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-
-</head>
-
-<body>
-
-    {% include 'navbar.html' %}
-
-    <div class="container">
-
-        <p> Please enter the text and/or upload a photo/video with your post below:</p>
-
-        <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
-
-        <textarea class="post-input-box" placeholder="Enter your text here" name="post" type="text" required></textarea>
-
-        <a> Upload a photo/video: </a> <input type="file" name="photo">
-
-        <input class="post-button" type="submit" value="Post">
-
-        </form>
-
-    </div>
-
-</body>
+    <body>
+        {% include 'navbar.html' %}
+        <div class="container">
+            <p> Please enter the text and/or upload a photo/video with your post below:</p>
+            <form action="{{ url_for('create_post') }}" method="post" enctype="multipart/form-data">
+            <textarea class="post-input-box" placeholder="Enter your text here" name="post" type="text" required></textarea>
+            <a> Upload a photo/video: </a> <input type="file" name="photo">
+            <input class="post-button" type="submit" value="Post">
+            </form>
+        </div>
+    </body>
 
 </html>
  

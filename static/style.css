@@ -153,17 +153,14 @@ body {
  .notifs:hover .notifs-content {
     display: block;
  }
-
 .user-info {
     display: flex;
     align-items: center;
 }
-
 .user-box {
     display: flex;
     align-items: center;
 }
-
 .username {
     font-weight: bold;
     text-decoration: none;
@@ -171,18 +168,13 @@ body {
     font-size: 30px;
     margin-right: 15px;
 }
-
 .username:hover {
-
     color: #0056b3;
-
 }
-
 .username-container {
     flex: none;
     float: left;
 }
-
 .edit-profile-btn {
     padding: 8px 15px;
     background-color: #0056b3;
@@ -192,25 +184,20 @@ body {
     cursor: pointer;
     font-size: 14px;
 }
-
 .edit-profile-btn:hover {
     background-color: #004896;
 }
-
 form {
     margin-bottom: 20px;
 }
-
 .vertical-form {
     display: flex;
     flex-direction: column;
 }
-
 .horizontal-form {
     display: flex;
     align-items: center;
 }
-
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -221,7 +208,6 @@ textarea {
     border-radius: 5px;
     font-size: 16px;
 }
-
 input[type="submit"],
 button,
 a.button {
@@ -235,129 +221,72 @@ a.button {
     margin-top: 15px;
     text-decoration: none;
 }
-
 input[type="submit"]:hover,
 button:hover,
 a.button:hover {
     background-color: #004896;
 }
-
 .post, .comment-box{
-
     border: 1px solid #ddd;
-
     padding: 10px;
-
     margin-bottom: 10px;
-
     background-color: #f9f9f9;
-
     padding-bottom: 15px;
-
 }
-
 .post-box {
-
     display: flex;
-
     flex-direction: column;
-
     margin-bottom: 30px;
-
 }
-
 .post-header {
-
     display: flex;
-
     align-items: center;
-
     margin-bottom: 10px;
-
 }
-
 .post-profile-picture {
-
     width: 40px;
-
     height: 40px;
-
     border-radius: 50%;
-
     margin-right: 10px;
-
     object-fit: cover;
-
 }
-
 .username-container {
-
     font-weight: bold;
-
     margin-right: 10px;
-
 }
-
 .time {
-
     color: #888;
-
     font-size: 12px;
-
     margin-left: auto;
-
 }
-
 .post-content {
-
     margin-bottom: 10px;
-
 }
-
 .post-photo img {
-
     max-width: 100%;
-
     height: auto;
-
     margin-bottom: 10px;
-
     border: 1px solid #ddd;
-
     border-radius: 5px;
-
     width:  500px;
-
     height: 500px;
-
     object-fit: cover;
-
 }
-
 .post-video video {
-
     max-width: 100%;
-
     height: auto;
-
     margin-bottom: 10px;
-
     border: 1px solid #ddd;
-
     border-radius: 5px;
-
 }
-
 .post:last-child {
     border-bottom: none;
 }
-
 .post-header {
     display: flex;
     justify-content: left;
     align-items: center;
 }
-
 .post-content {
     margin: 10px 0;
     word-wrap: break-word;
@@ -366,7 +295,6 @@ a.button:hover {
     flex-direction: column;
     text-align: left;
 }
-
 .profile-box {
     padding: 20px;
     background-color: #f9f9f9;
@@ -377,12 +305,10 @@ a.button:hover {
     max-width: 1000px;
     text-align: center;
 }
-
 .followers li:not(:last-child)::after,
 .following li:not(:last-child)::after {
     content: ",";
 }
-
 .followers,
 .following {
     display: flex;
@@ -391,14 +317,12 @@ a.button:hover {
     padding: 0;
     align-items: center;
 }
-
 .followers li,
 .following li {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
-
 .home-btn, .view-post-btn {
     color: white;
     text-decoration: none;
@@ -409,11 +333,9 @@ a.button:hover {
     cursor: pointer;
     font-size: 14px;
 }
-
 .home-btn:hover, .view-post-btn:hover {
     background-color: #0056b3;
 }
-
 .create-post-btn {
     color: white;
     text-decoration: none;
@@ -424,11 +346,9 @@ a.button:hover {
     cursor: pointer;
     font-size: 14px;
 }
-
 .create-post-btn:hover {
     background-color: #0056b3;
 }
-
 .post-input-box {
     width: 97.5%;
     height: 300px;
@@ -443,18 +363,15 @@ a.button:hover {
     padding: 10px;
     resize: none;
 }
-
 .post-button {
     display: flex;
     float: right;
 }
-
 .home-button {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
-
 .profile-picture {
     width: 50px;
     height: 50px;
@@ -463,50 +380,41 @@ a.button:hover {
     background-color: white;
     object-fit: cover;
 }
-
 .post-profile-picture {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
 }
-
 .flashes {
     list-style-type: none;
     padding: 0;
 }
-
 .flashes li {
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
 }
-
 .flashes li.error {
     background-color: #f8d7da;
     color: #721c24;
 }
-
 .bio {
     text-align: left;
     text-wrap: stable;
 }
-
 .email {
     text-align: left;
     text-wrap: stable;
 }
-
 h2,
 h3 {
     text-align: left;
 }
-
 h1 {
     text-align: center;
     margin-bottom: 100px;
 }
-
 .profile-container {
     width: 80%;
     max-width: 1000px;
@@ -524,7 +432,6 @@ h1 {
     max-width: 1000px;
     margin: 0 auto;
 }
-
 .flashes li {
     padding: 10px;
     margin-bottom: 10px;
@@ -532,31 +439,22 @@ h1 {
     font-size: 16px;
     text-align: center;
 }
-
 .flashes li.error {
     background-color: #f8d7da;
     color: #721c24;
 }
-
 .flashes li.success {
     background-color: #d4edda;
     color: #155724;
 }
-
 button:disabled {
     cursor: not-allowed;
 }
-
 .comment-header {
-
     display: flex;
-
     align-items: center;
-
     margin-bottom: 10px;
-
 }
-
 .like-button {
     width: 40px;
     height: 40px;
@@ -589,11 +487,8 @@ button:disabled {
     font-size: 18px;
     color: #888;
  }
-
 label {
-
     margin-right: 15px;
-
  }
 .auth-body {
     font-family: Arial, sans-serif;

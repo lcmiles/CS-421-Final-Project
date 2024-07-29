@@ -13,7 +13,7 @@
                 <label for="bio">Bio:</label>
                 <textarea class="bio-input-box" name="bio" id="bio">{{ user.bio }}</textarea>
                 <label for="profile_picture">Profile Picture:</label>
-                <input type="file" name="profile_picture" id="profile_picture">
+                <input type="file" name="profile_picture" id="profile_picture" accept=".png, .jpg, .jpeg">
                 <label for="is_private">Private Profile:</label>
                 <input class="privacy-toggle" type="checkbox" name="is_private" id="is_private" {% if user.is_private %}checked{% endif %}>
                 <button class="save-profile-button" type="submit">Save Changes</button>

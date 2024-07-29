@@ -305,17 +305,14 @@ a.button:hover {
     max-width: 1000px;
     text-align: center;
 }
-.followers li:not(:last-child)::after,
-.following li:not(:last-child)::after {
-    content: ",";
-}
 .followers,
 .following {
     display: flex;
+    flex-direction: column;
     list-style-type: none;
     gap: 0.3em;
     padding: 0;
-    align-items: center;
+    align-items: flex-start;
 }
 .followers li,
 .following li {

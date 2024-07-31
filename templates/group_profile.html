@@ -8,21 +8,19 @@
 
     <body>
         {% include 'navbar.html' %}
-        <div class="container">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul class="flashes">
-                        {% for category, message in messages %}
-                            <li class="{{ category }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-        </div>
 
-        <div class="profile-box">
+        <div style="margin-top: 150px;" class="profile-box">
             <h1>{{ group.gname }}</h1>
             <div class="profile-buttons">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <ul class="flashes">
+                            {% for category, message in messages %}
+                                <li class="{{ category }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% endwith %}
                     {% if not get_follow_status %}
                         <form action="{{ url_for('followgroup' )}}" method="post">
                             <input type="hidden" name="groupid" value="{{ group.id }}">

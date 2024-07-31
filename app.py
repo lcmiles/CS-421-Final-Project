@@ -21,7 +21,7 @@ import traceback
 
 app = Flask(__name__)
 
-LOCAL_TESTING = False  # Set True if running locally
+LOCAL_TESTING = True  # Set True if running locally
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:
@@ -324,7 +324,6 @@ def server_like(post_id):
     return redirect(url_for("post_page", post_id=post_id))
 
 
-
 @app.route("/search", methods=["GET"])
 def search_users():
     query = request.args.get("query")
@@ -354,18 +353,18 @@ def followgroup():
     user_id = session["user_id"]
     group_id = request.form.get("groupid")
     action = request.form.get("action")
-    
+
     if not user_id or not group_id:
         return "Missing user or group ID", 400
-    
+
     group = get_group_by_id(group_id)
 
-    if(action == "follow"):
+    if action == "follow":
         toggle_group_follow(user_id, group_id, follow=True)
-        flash('You are now following ', "success")
+        flash("You are now following ", "success")
     elif action == "unfollow":
         toggle_group_follow(user_id, group_id, follow=False)
-        flash('You are now unfollowing ', 'success')
+        flash("You are now unfollowing ", "success")
 
     userrelation = get_group_by_id(group_id)
     return redirect(url_for("view_group", groupname=group.gname))
@@ -377,14 +376,15 @@ def view_group(groupname):
         return redirect(url_for("login"))
 
     grp = get_group_by_name(gname=groupname)
-    user_id = session['user_id']
-    follow_status = part_of_group(user_id, grp.id)    
-    
+    user_id = session["user_id"]
+    follow_status = part_of_group(user_id, grp.id)
+
     return render_template(
         "group_profile.html",
         session=session,
         group=grp,
-        get_follow_status=follow_status)
+        get_follow_status=follow_status,
+    )
 
 
 @app.route("/searchgroups", methods=["GET"])
@@ -400,7 +400,6 @@ def search_groups():
     return render_template("groups.html", groups=groups, query=query)
 
 
-
 @app.route("/create_group", methods=["GET", "POST"])
 def create_group():
     if "user_id" not in session:
@@ -409,22 +408,23 @@ def create_group():
         user_id = session["user_id"]
         description = request.form.get("description")
         group_name = request.form.get("name")
-        checkgname = Group.query.filter(Group.gname==group_name).first()
+        checkgname = Group.query.filter(Group.gname == group_name).first()
         if checkgname:
-            flash('Found group name already exists', "succcess")
+            flash("Found group name already exists", "succcess")
             return redirect(url_for("create_group"))
         else:
             group_type = request.form.get("type")
             create_group_db(user_id, description, group_name, group_type)
-            flash('Group Successfully Created', "success")
+            flash("Group Successfully Created", "success")
     return render_template("create_group.html")
+
 
 def create_group_db(user_id, content, gname, gtype):
     new_group = Group(
         user_id=user_id,
         content=content,
-        gname = gname,
-        gtype = gtype,
+        gname=gname,
+        gtype=gtype,
         timestamp=datetime.utcnow(),
     )
     user = get_user_by_id(user_id)
@@ -435,7 +435,7 @@ def create_group_db(user_id, content, gname, gtype):
 
 if __name__ == "__main__":
     # uncomment line to rebuild cloud sql db with next deployment
-    # with app.app_context():
-    #     db.drop_all()
-    #     db.create_all()
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
     app.run(host="0.0.0.0", port=8080)

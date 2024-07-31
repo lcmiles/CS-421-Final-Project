@@ -24,7 +24,7 @@
                 <ul>
                     {% for group in groups %}
                     <li>
-                        <a class="username" >{{ group.gname }}</a>
+                        <a class="username" href="{{ url_for('view_group', groupname=group.gname) }}">{{ group.gname }}</a>
                     </li>
                     {% endfor %}
                 </ul>

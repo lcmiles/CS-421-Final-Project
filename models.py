@@ -228,6 +228,32 @@ def get_follow_status(follower_id, followed_id):
 
     return -1
 
+def part_of_group(user_id, group_id):
+    association= db.session.query(user_group).filter_by(user_id=user_id, group_id=group_id).first()
+    if association:
+        return True
+    return False
+
+def get_group_by_name(gname):
+    group = Group.query.filter(Group.gname == gname).first()
+    return group
+
+def get_group_by_id(gid):
+    group = Group.query.filter(Group.id == gid).first()
+    return group
+
+
+def toggle_group_follow(userid, groupid, follow):
+    user = User.query.get(userid)
+    group = Group.query.get(groupid)
+
+    if follow:
+        if group not in user.followed_groups:
+            user.followed_groups.append(group)
+    else:
+        if group in user.followed_groups:
+            user.followed_groups.remove(group)    
+    db.session.commit()
 
 def approve_follow_request(follower_id, followed_id):
     follow_request = Follow.query.filter_by(

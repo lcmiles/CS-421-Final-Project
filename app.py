@@ -346,8 +346,51 @@ def internal_error(error):
 def internal_error(error):
     return render_template("404.html", error=error), 404
 
+
+@app.route("/followgroup", methods=["POST"])
+def followgroup():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    user_id = session["user_id"]
+    group_id = request.form.get("groupid")
+    action = request.form.get("action")
+    
+    if not user_id or not group_id:
+        return "Missing user or group ID", 400
+    
+    group = get_group_by_id(group_id)
+
+    if(action == "follow"):
+        toggle_group_follow(user_id, group_id, follow=True)
+        flash('You are now following ', "success")
+    elif action == "unfollow":
+        toggle_group_follow(user_id, group_id, follow=False)
+        flash('You are now unfollowing ', 'success')
+
+    userrelation = get_group_by_id(group_id)
+    return redirect(url_for("view_group", groupname=group.gname))
+
+
+@app.route("/groups/<groupname>", methods=["GET"])
+def view_group(groupname):
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    grp = get_group_by_name(gname=groupname)
+    user_id = session['user_id']
+    follow_status = part_of_group(user_id, grp.id)    
+    
+    return render_template(
+        "group_profile.html",
+        session=session,
+        group=grp,
+        get_follow_status=follow_status)
+
+
 @app.route("/searchgroups", methods=["GET"])
 def search_groups():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
     query = request.args.get("gsearch")
     groups = []
     if query == "*":

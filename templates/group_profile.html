@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+
+    <head>
+        <title>{{ group.gname }}</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+    </head>
+
+    <body>
+        {% include 'navbar.html' %}
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="profile-box">
+            <h1>{{ group.gname }}</h1>
+            <div class="profile-buttons">
+                    {% if not get_follow_status %}
+                        <form action="{{ url_for('followgroup' )}}" method="post">
+                            <input type="hidden" name="groupid" value="{{ group.id }}">
+                            <input type="hidden" name="action" value="follow">
+                            <button type="submit" class="profile-button">Follow</button>
+                        </form>
+                    {% else  %}
+                        <form action="{{ url_for('followgroup') }}" method="post">
+                            <input type="hidden" name="groupid" value="{{ group.id }}">
+                            <input type="hidden" name="action" value="unfollow">
+                            <button type="submit" class="profile-button">Unfollow</button>
+                        </form>
+                    {% endif %}
+            </div>
+
+            {% if group.content %}
+            <div class="profile-container">
+                <h3>About:</h3>
+                <p class="bio">{{ group.content }}</p>
+            </div>
+            {% endif %}
+
+            {% if group.group_followed_by %}
+            <div class="profile-container">
+                    <h3>Followers:</h3>
+                    <ul class="followers">
+                        {% for follow in group.group_followed_by %}
+                            <li>
+                                <img src="{{ follow.profile_picture }}"
+                                    alt="Profile Picture" class="post-profile-picture">
+                                <a class="username"
+                                    href="{{ url_for('view_profile', username=follow.username) }}">{{ follow.username }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+            </div>
+            {% endif %}
+        </div>
+    </body>

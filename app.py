@@ -324,6 +324,7 @@ def server_like(post_id):
     return redirect(url_for("post_page", post_id=post_id))
 
 
+
 @app.route("/search", methods=["GET"])
 def search_users():
     query = request.args.get("query")
@@ -344,6 +345,49 @@ def internal_error(error):
 @app.errorhandler(404)
 def internal_error(error):
     return render_template("404.html", error=error), 404
+
+@app.route("/searchgroups", methods=["GET"])
+def search_groups():
+    query = request.args.get("gsearch")
+    groups = []
+    if query == "*":
+        groups = Group.query.all()
+    elif query:
+        groups = Group.query.filter(Group.gname.contains(query)).all()
+    return render_template("groups.html", groups=groups, query=query)
+
+
+
+@app.route("/create_group", methods=["GET", "POST"])
+def create_group():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        user_id = session["user_id"]
+        description = request.form.get("description")
+        group_name = request.form.get("name")
+        checkgname = Group.query.filter(Group.gname==group_name).first()
+        if checkgname:
+            flash('Found group name already exists', "succcess")
+            return redirect(url_for("create_group"))
+        else:
+            group_type = request.form.get("type")
+            create_group_db(user_id, description, group_name, group_type)
+            flash('Group Successfully Created', "success")
+    return render_template("create_group.html")
+
+def create_group_db(user_id, content, gname, gtype):
+    new_group = Group(
+        user_id=user_id,
+        content=content,
+        gname = gname,
+        gtype = gtype,
+        timestamp=datetime.utcnow(),
+    )
+    user = get_user_by_id(user_id)
+    new_group.group_followed_by.append(user)
+    db.session.add(new_group)
+    db.session.commit()
 
 
 if __name__ == "__main__":

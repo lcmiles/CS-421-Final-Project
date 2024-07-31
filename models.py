@@ -124,7 +124,7 @@ def get_posts(user_id=None, current_user_id=None):
                 Post.query.filter(
                     (Post.user_id.in_(following_ids))
                     | (Post.user_id == current_user_id)
-                    | (Post.user.has(User.is_private == False))
+                    #| (Post.user.has(User.is_private == False))
                 )
                 .order_by(desc(Post.timestamp))
                 .all()

@@ -11,6 +11,14 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+user_group = db.Table(
+    "group_followers",
+    db.Column("group_id", db.Integer, db.ForeignKey("group.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+    db.Column("timestamp", db.DateTime, default=datetime.utcnow),
+)
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -30,15 +38,33 @@ class User(db.Model):
         primaryjoin="and_(User.id==Follow.follower_id, Follow.approved==1)"
     )
 
+    followed_groups = db.relationship(
+        "Group", secondary=user_group, back_populates="group_followed_by"
+    )
+
+
+class Group(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    gname = db.Column(db.Text)
+    gtype = db.Column(db.Text)
+    group_followed_by = db.relationship(
+        "User", secondary=user_group, back_populates="followed_groups"
+    )
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey("group.id"), nullable=True)
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     photo = db.Column(db.String(120), nullable=True)
     video = db.Column(db.String(120), nullable=True)
     user = db.relationship("User", backref=db.backref("posts", lazy=True))
+    group = db.relationship("Group", backref=db.backref("posts", lazy=True))
 
 
 class Comment(db.Model):
@@ -120,11 +146,14 @@ def get_posts(user_id=None, current_user_id=None):
                     follower_id=current_user_id, approved=1
                 ).all()
             ]
+            group_ids = [
+                group.id for group in User.query.get(current_user_id).followed_groups
+            ]
             return (
                 Post.query.filter(
                     (Post.user_id.in_(following_ids))
                     | (Post.user_id == current_user_id)
-                    #| (Post.user.has(User.is_private == False))
+                    | (Post.group_id.in_(group_ids))
                 )
                 .order_by(desc(Post.timestamp))
                 .all()
@@ -200,6 +229,40 @@ def get_follow_status(follower_id, followed_id):
         return existing_follow.approved
 
     return -1
+
+
+def part_of_group(user_id, group_id):
+    association = (
+        db.session.query(user_group)
+        .filter_by(user_id=user_id, group_id=group_id)
+        .first()
+    )
+    if association:
+        return True
+    return False
+
+
+def get_group_by_name(gname):
+    group = Group.query.filter(Group.gname == gname).first()
+    return group
+
+
+def get_group_by_id(gid):
+    group = Group.query.filter(Group.id == gid).first()
+    return group
+
+
+def toggle_group_follow(userid, groupid, follow):
+    user = User.query.get(userid)
+    group = Group.query.get(groupid)
+
+    if follow:
+        if group not in user.followed_groups:
+            user.followed_groups.append(group)
+    else:
+        if group in user.followed_groups:
+            user.followed_groups.remove(group)
+    db.session.commit()
 
 
 def approve_follow_request(follower_id, followed_id):

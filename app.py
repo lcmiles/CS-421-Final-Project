@@ -21,7 +21,7 @@ import traceback
 
 app = Flask(__name__)
 
-LOCAL_TESTING = True  # Set True if running locally
+LOCAL_TESTING = False  # Set True if running locally
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "cs-421-final-project-a2dc72ecda13.json"
 
 if LOCAL_TESTING:
@@ -378,12 +378,14 @@ def view_group(groupname):
     grp = get_group_by_name(gname=groupname)
     user_id = session["user_id"]
     follow_status = part_of_group(user_id, grp.id)
+    user_posts = get_posts(part_of_group(user_id, grp.id))
 
     return render_template(
         "group_profile.html",
         session=session,
         group=grp,
         get_follow_status=follow_status,
+        posts=user_posts,
     )
 
 

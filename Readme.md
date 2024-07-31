@@ -12,6 +12,7 @@ The goal of this project was to develop a full-stack web application for softwar
 * Posting text, images, or video
 * Interactions including likes and comments
 * A follower system
+* Groups that users can join and share posts in
 
 ### You can find the web app hosted at this [link](https://cs-421-final-project-qoeedekjnq-uc.a.run.app/)
 

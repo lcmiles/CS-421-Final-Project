@@ -11,6 +11,12 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+user_group = db.Table('group_followers',
+    db.Column('group_id', db.Integer, db.ForeignKey('group.id'), primary_key=True),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('timestamp', db.DateTime, default=datetime.utcnow)
+)
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -28,6 +34,26 @@ class User(db.Model):
     )
     following: Mapped[List["Follow"]] = db.relationship(
         primaryjoin="and_(User.id==Follow.follower_id, Follow.approved==1)"
+    )
+
+    followed_groups = db.relationship(
+        'Group',
+        secondary=user_group,
+        back_populates='group_followed_by'
+    )
+
+
+class Group(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    gname = db.Column(db.Text)
+    gtype = db.Column(db.Text)
+    group_followed_by = db.relationship(
+        'User',
+        secondary=user_group,
+        back_populates='followed_groups'
     )
 
 
@@ -88,6 +114,7 @@ def get_user_by_username(username):
 
 def get_user_by_id(user_id):
     return User.query.get(user_id)
+
 
 
 def update_profile(user_id, bio, profile_picture):

@@ -346,6 +346,10 @@ a.button:hover {
 .create-post-btn:hover {
     background-color: #0056b3;
 }
+.group-box{
+    width: 97.5%;
+    margin-right: 25px;
+}
 .post-input-box {
     width: 97.5%;
     height: 300px;

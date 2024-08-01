@@ -154,6 +154,7 @@ def get_posts(user_id=None, current_user_id=None):
                     (Post.user_id.in_(following_ids))
                     | (Post.user_id == current_user_id)
                     | (Post.group_id.in_(group_ids))
+                    | (Post.user.has(User.is_private == False))
                 )
                 .order_by(desc(Post.timestamp))
                 .all()
@@ -168,6 +169,15 @@ def get_posts(user_id=None, current_user_id=None):
 def get_post_by_id(post_id):
 
     return Post.query.filter_by(id=post_id)
+
+def get_posts_by_group(group_id):
+    group = Group.query.get(group_id)
+    if not group:
+        return []
+
+    follower_ids = [follower.id for follower in group.group_followed_by]
+    posts = Post.query.filter(Post.user_id.in_(follower_ids)).order_by(Post.timestamp.desc()).all()
+    return posts
 
 
 def add_comment(post_id, user_id, content):

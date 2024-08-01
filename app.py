@@ -376,16 +376,20 @@ def view_group(groupname):
         return redirect(url_for("login"))
 
     grp = get_group_by_name(gname=groupname)
+    if not grp:
+        return "Group not found", 404
+
     user_id = session["user_id"]
     follow_status = part_of_group(user_id, grp.id)
-    user_posts = get_posts(part_of_group(user_id, grp.id))
+    
+    posts = get_posts_by_group(grp.id)
 
     return render_template(
         "group_profile.html",
         session=session,
         group=grp,
         get_follow_status=follow_status,
-        posts=user_posts,
+        posts=posts,
     )
 
 
@@ -437,7 +441,7 @@ def create_group_db(user_id, content, gname, gtype):
 
 if __name__ == "__main__":
     # uncomment line to rebuild cloud sql db with next deployment
-    # with app.app_context():
-    #     db.drop_all()
-    #     db.create_all()
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
     app.run(host="0.0.0.0", port=8080)

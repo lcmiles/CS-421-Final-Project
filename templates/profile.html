@@ -86,7 +86,7 @@
                 {% if posts %}
                     <div class="profile-container">
                     <h3>Posts:</h3>
-                    {% if user.is_private and session['user_id'] != user.id and get_follow_status(session['user_id'], user.id) == 0 %}
+                    {% if user.is_private and session['user_id'] != user.id and get_follow_status(session['user_id'], user.id) != 1 %}
                     <p1> Posts hidden because this account is private. Send a follow request to this user to see their posts! </p1>
                     {% endif %}
                         {% for post in posts %}

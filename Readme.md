@@ -14,8 +14,6 @@ The goal of this project was to develop a full-stack web application for softwar
 * A follower system
 * Groups that users can join and share posts in
 
-### You can find the web app hosted at this [link](https://cs-421-final-project-qoeedekjnq-uc.a.run.app/)
-
 ### Instructions to deploy the Flask app locally:
 
 1. Create a Python virtual environment or download and install [Conda](https://www.anaconda.com/download) and then select it as your interpreter within your IDE.

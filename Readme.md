@@ -1,4 +1,4 @@
-# CS-429 Final Project
+# CS-421 Final Project
 
 ## Project Members: Logan Miles, Abhi Bedi, Faris Khan, Nicholas Fason, Taylor Shirah
 

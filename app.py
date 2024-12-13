@@ -14,47 +14,27 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import pytz
 import secrets
-from google.cloud import storage
-import google.auth
 import os
 import traceback
 
 app = Flask(__name__)
 
-LOCAL_TESTING = False  # Set True if running locally
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "cs-421-final-project-a2dc72ecda13.json"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 
-if LOCAL_TESTING:
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = (
-        "mysql+pymysql://root:AIrA$V{q$7:80J77@/cs-421-final-project-db?unix_socket=/cloudsql/cs-421-final-project:us-central1:cs-421-final-project-sql-instance"
-    )
-
-app.config["GCS_BUCKET"] = "cs-421-final-project-uploads"
-app.config["PROFILE_UPLOAD_FOLDER"] = "cs-421-final-project-uploads/static/uploads"
+app.config["UPLOAD_FOLDER"] = "static/uploads"
+app.config["PROFILE_UPLOAD_FOLDER"] = "static/profile_pics"
 
 CORS(app)
 db.init_app(app)
 app.config["SECRET_KEY"] = secrets.token_hex(16)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-storage_client = storage.Client()
-bucket = storage_client.bucket(app.config["GCS_BUCKET"])
+
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "mp4", "avi", "mov"}
 
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def upload_to_gcs(file, bucket_name, folder):
-    credentials, project = google.auth.default()
-    client = storage.Client(credentials=credentials, project=project)
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(f"{folder}/{file.filename}")
-    blob.upload_from_file(file)
-    return blob.public_url
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -72,33 +52,19 @@ def index():
         if "photo" in request.files:
             photo_file = request.files["photo"]
             if photo_file and allowed_file(photo_file.filename):
-                if LOCAL_TESTING:
-                    photo_filename = secure_filename(photo_file.filename)
-                    photo_path = os.path.join(
-                        app.config["UPLOAD_FOLDER"], photo_filename
-                    )
-                    photo_file.save(photo_path)
-                    photo = f"uploads/{photo_filename}"
-                else:
-                    photo = upload_to_gcs(
-                        photo_file, app.config["GCS_BUCKET"], "uploads"
-                    )
+                photo_filename = secure_filename(photo_file.filename)
+                photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
+                photo_file.save(photo_path)
+                photo = f"{photo_filename}"
             else:
                 flash("Unsupported photo file type.", "error")
         if "video" in request.files:
             video_file = request.files["video"]
             if video_file and allowed_file(video_file.filename):
-                if LOCAL_TESTING:
-                    video_filename = secure_filename(video_file.filename)
-                    video_path = os.path.join(
-                        app.config["UPLOAD_FOLDER"], video_filename
-                    )
-                    video_file.save(video_path)
-                    video = f"uploads/{video_filename}"
-                else:
-                    video = upload_to_gcs(
-                        video_file, app.config["GCS_BUCKET"], "uploads"
-                    )
+                video_filename = secure_filename(video_file.filename)
+                video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+                video_file.save(video_path)
+                video = f"{video_filename}"
             else:
                 flash("Unsupported video file type.", "error")
         create_post_db(user_id, post_content, photo, video)
@@ -122,14 +88,20 @@ def create_post():
         if "photo" in request.files:
             photo_file = request.files["photo"]
             if photo_file and allowed_file(photo_file.filename):
-                photo = upload_to_gcs(photo_file, app.config["GCS_BUCKET"], "uploads")
+                photo_filename = secure_filename(photo_file.filename)
+                photo_path = os.path.join(app.config["UPLOAD_FOLDER"], photo_filename)
+                photo_file.save(photo_path)
+                photo = f"{photo_filename}"
             else:
                 flash("Unsupported photo file type.", "error")
                 return render_template("create_post.html")
         if "video" in request.files:
             video_file = request.files["video"]
             if video_file and allowed_file(video_file.filename):
-                video = upload_to_gcs(video_file, app.config["GCS_BUCKET"], "uploads")
+                video_filename = secure_filename(video_file.filename)
+                video_path = os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+                video_file.save(video_path)
+                video = f"{video_filename}"
             else:
                 flash("Unsupported video file type.", "error")
                 return render_template("create_post.html")
@@ -246,9 +218,10 @@ def edit_profile():
         is_private = request.form.get("is_private") == "on"
         if profile_picture:
             if allowed_file(profile_picture.filename):
-                user.profile_picture = upload_to_gcs(
-                    profile_picture, app.config["GCS_BUCKET"], "profile_pics"
-                )
+                profile_filename = secure_filename(profile_picture.filename)
+                profile_path = os.path.join(app.config["PROFILE_UPLOAD_FOLDER"], profile_filename)
+                profile_picture.save(profile_path)
+                user.profile_picture = f"{profile_filename}"
                 session["profile_picture"] = user.profile_picture
             else:
                 flash("Unsupported profile picture file type.", "error")
@@ -260,7 +233,6 @@ def edit_profile():
         return redirect(url_for("view_profile", username=user.username))
     notifs = get_follow_requests(session["user_id"])
     return render_template("edit_profile.html", user=user, notifs=notifs)
-
 
 @app.route("/follow", methods=["POST"])
 def follow():
@@ -441,7 +413,7 @@ def create_group_db(user_id, content, gname, gtype):
 
 if __name__ == "__main__":
     # uncomment line to rebuild cloud sql db with next deployment
-    # with app.app_context():
-    #     db.drop_all()
-    #     db.create_all()
-    app.run(host="0.0.0.0", port=8080)
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+    app.run(debug=True,host="0.0.0.0", port=8080)

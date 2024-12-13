@@ -20,12 +20,10 @@
             {% endwith %}
             <div class="profile-box">
                 {% if user.profile_picture %}
-                    <img src="{{ user.profile_picture }}" alt="Profile Picture"
-                        class="profile-picture-profile-box" />
+                <img src="{{ url_for('static', filename='profile_pics/' + user.profile_picture) }}" alt="Profile Picture" class="profile-picture-profile-box"/>
 
                 {% else %}
-                    <img src="{{ url_for('static', filename='default.png') }}" alt="Default Profile Picture"
-                        class="profile-picture" />
+                <img src="{{ url_for('static', filename='profile_pics/' + default.png) }}" alt="Profile Picture" class="profile-picture-profile-box"/>
                 {% endif %}
                 <h1>{{ user.username }}</h1>
                 <div class="profile-buttons">
@@ -84,42 +82,43 @@
                     </div>
                 {% endif %}
                 {% if posts %}
-                    <div class="profile-container">
-                    <h3>Posts:</h3>
-                    {% if user.is_private and session['user_id'] != user.id and get_follow_status(session['user_id'], user.id) != 1 %}
-                    <p1> Posts hidden because this account is private. Send a follow request to this user to see their posts! </p1>
+    <div class="profile-container">
+        <h3>Posts:</h3>
+        {% if user.is_private and session['user_id'] != user.id and get_follow_status(session['user_id'], user.id) != 1 %}
+            <p1> Posts hidden because this account is private. Send a follow request to this user to see their posts! </p1>
+        {% endif %}
+                {% for post in posts %}
+                    {% if post.is_public or session['user_id'] == user.id or get_follow_status(session['user_id'], user.id) == 1 %}
+                        <div onclick="location.href='{{ url_for('post_page', post_id=post.id) }}';" class="post">
+                            <div class="post-box">
+                                <div class="post-header">
+                                    <img src="{{ url_for('static', filename='profile_pics/' + post.user.profile_picture) }}"
+                                        alt="Profile Picture" class="post-profile-picture">
+                                    <span class="username-container"><a style="color:dodgerblue"
+                                        href="{{ url_for('view_profile', username=post.user.username) }}"
+                                        class="username">{{ post.user.username }}</a></span>
+                                    <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                                </div>
+
+                                <div class="post-content">{{ post.content }}</div>
+                                {% if post.photo %}
+                                    <div class="post-photo">
+                                        <img src="{{ url_for('static', filename='uploads/' + post.photo) }}" alt="Post Photo">
+                                    </div>
+                                {% endif %}
+                                {% if post.video %}
+                                    <div class="post-video">
+                                        <video controls>
+                                            <source src="{{ url_for('static', filename='uploads/' + post.video) }}" type="video/mp4">
+                                        </video>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     {% endif %}
-                        {% for post in posts %}
-                            {% if post.is_public or session['user_id'] == user.id or get_follow_status(session['user_id'], user.id) == 1 %}
-                    <div onclick="location.href='{{ url_for('post_page',post_id=post.id)}}';" class="post">
-                    <div class="post-box">
-                    <div class="post-header">
-                    <img src="{{ post.user.profile_picture }}"
-                                                alt="Profile Picture" class="post-profile-picture">
-                    <span class="username-container"><a style="color:dodgerblue"
-                                                href="{{ url_for('view_profile', username=post.user.username) }}"
-                                                class="username">{{ post.user.username }}</a></span>
-                    <span class="time" data-timestamp="{{ post.timestamp.isoformat() }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
-                    </div>
-                    <div class="post-content">{{ post.content }}</div>
-                                        {% if post.photo %}
-                    <div class="post-photo">
-                    <img src="{{ post.photo }}" alt="Post Photo">
-                    </div>
-                                        {% endif %}
-                                        {% if post.video %}
-                    <div class="post-video">
-                    <video controls>
-                    <source src="{{ post.video }}" type="video/mp4">
-                    </video>
-                    </div>
-                                        {% endif %}
-                    </div>
-                    </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
             </div>
         </div>
         <script>

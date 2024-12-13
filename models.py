@@ -28,7 +28,7 @@ class User(db.Model):
     profile_picture = db.Column(
         db.String(100),
         nullable=False,
-        default="https://storage.googleapis.com/cs-421-final-project-uploads/profile_pics/default.png",
+        default="default.png",
     )
     is_private = db.Column(db.Boolean, default=False)
     followers: Mapped[List["Follow"]] = db.relationship(

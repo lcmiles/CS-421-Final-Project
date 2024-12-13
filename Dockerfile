@@ -4,7 +4,7 @@ FROM python:3.11
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY . ./
+COPY . ./ 
 
 # Install the required dependencies
 RUN pip install -r requirements.txt
@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 EXPOSE 8080
 
 # Run app.py when the container launches
-CMD python app.py
+CMD ["python", "app.py"]

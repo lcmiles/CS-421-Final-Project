@@ -8,3 +8,4 @@ services:
     volumes:
       - ./static/profile_pics:/app/static/profile_pics
       - ./static/uploads:/app/static/uploads
+    restart: unless-stopped
